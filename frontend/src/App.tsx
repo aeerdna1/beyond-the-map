@@ -22,8 +22,10 @@ function ScrollToTop() {
 
 export default function App() {
   const location = useLocation();
+  // overflow-x-clip (not hidden): stops slide-in animations from making the page scroll sideways
+  // on phones, without creating a scroll container that would break the sticky header.
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col overflow-x-clip">
       <ScrollToTop />
       <Navbar />
       <AnimatePresence mode="wait">

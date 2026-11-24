@@ -33,4 +33,24 @@ class RateLimiterTest {
         clock.now = clock.now.plus(Duration.ofMinutes(61));
         assertThat(rl.tryAcquire("1.2.3.4")).isTrue();
     }
+
+    @Test
+    void evictStaleForgetsIdleClientsButKeepsActiveOnes() {
+        TestClock clock = new TestClock();
+        RateLimiter rl = new RateLimiter(5, clock);
+
+        rl.tryAcquire("old-visitor");
+        clock.now = clock.now.plus(Duration.ofMinutes(50));
+        rl.tryAcquire("recent-visitor");
+        assertThat(rl.trackedKeys()).isEqualTo(2);
+
+        // 61 min after the old visit, 11 min after the recent one.
+        clock.now = clock.now.plus(Duration.ofMinutes(11));
+        rl.evictStale();
+
+        assertThat(rl.trackedKeys()).isEqualTo(1);
+        // The recent visitor's earlier request still counts towards the limit.
+        for (int i = 0; i < 4; i++) assertThat(rl.tryAcquire("recent-visitor")).isTrue();
+        assertThat(rl.tryAcquire("recent-visitor")).isFalse();
+    }
 }

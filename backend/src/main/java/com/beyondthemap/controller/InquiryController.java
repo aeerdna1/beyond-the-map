@@ -29,7 +29,8 @@ public class InquiryController {
 
     @PostMapping
     public ResponseEntity<Map<String, String>> submit(@Valid @RequestBody InquiryRequest body, HttpServletRequest req) {
-        // remoteAddr honours X-Forwarded-For because server.forward-headers-strategy=framework.
+        // remoteAddr is the real client IP: Tomcat's RemoteIpValve (forward-headers-strategy=native) only
+        // takes it from X-Forwarded-For when the request came through a trusted internal proxy.
         if (!rateLimiter.tryAcquire(req.getRemoteAddr())) {
             return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
                     .body(Map.of("message", "Too many requests - please try again later or contact me directly."));

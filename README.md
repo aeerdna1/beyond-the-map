@@ -104,10 +104,24 @@ Admin uses HTTP Basic (`ADMIN_USER` / `ADMIN_PASSWORD`, default `admin` / `chang
 
 Frontend: `VITE_API_URL` (API base URL in production), `VITE_USE_LOCAL_DATA=true` (static demo, never calls the API).
 
+## Deployment: keep the API behind a proxy
+
+The inquiry rate limit is per visitor IP. The API reads that IP from `X-Forwarded-For` only when the request
+arrives from a trusted proxy address (private/loopback ranges: `10.x`, `172.16-31.x`, `192.168.x`, `127.x`,
+`100.64.x`, ...), and it reads the header from the right, so anything a visitor adds is ignored.
+Requests from any other address are limited by their real connection IP.
+
+- **Do** expose the API only through Render, Railway, or your own reverse proxy (nginx, Caddy, Traefik).
+- **Do not** publish the backend port directly to the internet. If your proxy is not on a private address,
+  set `SERVER_TOMCAT_REMOTEIP_INTERNALPROXIES` to a regex matching its IP. Never set it to an empty
+  value: that trusts no proxy, and every visitor would then share the proxy's IP and its 5-per-hour limit.
+- The limiter is in memory: it resets on restart and is per instance. It clears inactive visitors every
+  10 minutes. If you run more than one instance, move it to Redis (e.g. Bucket4j).
+
 ## Tests
 
 ```bash
-cd backend && mvn test      # 8 tests: content API, validation, consent, honeypot, admin auth, rate limiter
+cd backend && mvn test      # 11 tests: content API, validation, consent, honeypot, admin auth, rate limiter, client-IP spoofing
 cd frontend && npm run build  # type-check + production build
 ```
 

@@ -1,7 +1,13 @@
 server:
   port: ${PORT:8080}
-  # Trust X-Forwarded-* from the hosting proxy (Render/Railway) so rate limiting sees real client IPs.
-  forward-headers-strategy: framework
+  # Client IP for rate limiting. "native" = Tomcat RemoteIpValve: X-Forwarded-For is only used when the
+  # direct peer is a trusted internal proxy (private/loopback ranges by default), and it is read from the
+  # right, so values a visitor adds on the left are ignored. Never expose the API port directly; only put
+  # it behind Render, Railway or your own reverse proxy (see README "Deployment").
+  # Trusted proxies use Spring Boot's default regex (10/8, 172.16/12, 192.168/16, 169.254/16, 127/8,
+  # 100.64/10, fc00::/7, ::1). Do NOT set server.tomcat.remoteip.internal-proxies to an empty value:
+  # that trusts no proxy at all. To override, set SERVER_TOMCAT_REMOTEIP_INTERNALPROXIES to a regex.
+  forward-headers-strategy: native
 
 spring:
   application:
