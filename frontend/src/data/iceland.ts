@@ -1,0 +1,97 @@
+import type { Destination } from '../types';
+import { img } from './img';
+
+export const iceland: Destination = {
+  slug: 'iceland',
+  name: 'Iceland',
+  flag: '🇮🇸',
+  region: 'Europe',
+  vibes: ['Nature'],
+  tagline: 'Fire, ice and the Northern Lights dancing overhead.',
+  description:
+    'Iceland feels like another planet: black-sand beaches, glaciers, geysers and waterfalls around every bend of the Ring Road. In summer the sun barely sets; in winter the sky lights up green.',
+  bestTimeToVisit: 'June - August (midnight sun, road trips) and September - March (Northern Lights)',
+  heroImageUrl: img('iceland1'),
+  lat: 64.96,
+  lng: -19.02,
+  places: [
+    {
+      slug: 'reykjavik',
+      name: 'Reykjavik',
+      description: 'The world\'s northernmost capital: colourful houses, cosy cafes and a big creative scene.',
+      funFact: 'Reykjavik runs almost entirely on renewable geothermal and hydro energy - even some pavements are heated to melt the snow.',
+      heroImageUrl: img('iceland2'),
+      activities: [
+        { rank: 1, title: 'Hallgrimskirkja tower', description: 'Ride up the basalt-inspired church for a view over the rainbow rooftops.', imageUrl: img('iceland2', 800) },
+        { rank: 2, title: 'Sky Lagoon at sunset', description: 'An infinity-edge geothermal pool looking out over the ocean.', imageUrl: img('lake', 800) },
+        { rank: 3, title: 'Harpa concert hall', description: 'A glass honeycomb on the harbour that glows at night.', imageUrl: img('iceland2', 800) },
+        { rank: 4, title: 'Whale watching from the Old Harbour', description: 'Minke whales, humpbacks and puffins in summer.', imageUrl: img('iceland1', 800) },
+        { rank: 5, title: 'Northern Lights hunt', description: 'Drive out of the city lights on a clear winter night.', imageUrl: img('aurora', 800) },
+      ],
+      gallery: [
+        { url: img('iceland2', 1200), caption: 'Reykjavik rooftops' },
+        { url: img('aurora', 1200), caption: 'Aurora over the bay' },
+      ],
+    },
+    {
+      slug: 'golden-circle',
+      name: 'Golden Circle',
+      description: 'A 300 km loop with three of Iceland\'s most famous natural wonders.',
+      funFact: 'At Thingvellir you can snorkel in Silfra, a crack between the North American and Eurasian tectonic plates.',
+      heroImageUrl: img('iceland1'),
+      activities: [
+        { rank: 1, title: 'Snorkel Silfra fissure', description: 'Glacier water so clear you can see over 100 m - between two continents.', imageUrl: img('lake', 800) },
+        { rank: 2, title: 'Strokkur geyser', description: 'Erupts every 5 - 10 minutes, shooting water up to 30 m high.', imageUrl: img('iceland1', 800) },
+        { rank: 3, title: 'Gullfoss waterfall', description: 'A two-step thundering waterfall, often with a rainbow.', imageUrl: img('iceland1', 800) },
+        { rank: 4, title: 'Secret Lagoon', description: 'Iceland\'s oldest natural swimming pool, steaming in the fields.', imageUrl: img('lake', 800) },
+        { rank: 5, title: 'Kerid crater', description: 'A red volcanic crater with a blue-green lake at its bottom.', imageUrl: img('landscape', 800) },
+      ],
+      gallery: [{ url: img('iceland1', 1200), caption: 'Golden Circle landscapes' }],
+    },
+    {
+      slug: 'south-coast',
+      name: 'South Coast (Vik)',
+      description: 'Waterfalls, glaciers and black-sand beaches along the Ring Road.',
+      funFact: 'Reynisfjara\'s black sand comes from lava that cooled instantly when it hit the cold Atlantic.',
+      heroImageUrl: img('iceland2'),
+      activities: [
+        { rank: 1, title: 'Walk behind Seljalandsfoss', description: 'A path circles right behind the curtain of water.', imageUrl: img('iceland1', 800) },
+        { rank: 2, title: 'Skogafoss', description: 'Climb the 500+ steps for the view from the top.', imageUrl: img('iceland1', 800) },
+        { rank: 3, title: 'Reynisfjara black-sand beach', description: 'Basalt columns and sea stacks - but respect the sneaker waves.', imageUrl: img('iceland2', 800) },
+        { rank: 4, title: 'Glacier hike on Solheimajokull', description: 'Crampons, ice axe and blue ice crevasses with a guide.', imageUrl: img('mountains', 800) },
+        { rank: 5, title: 'Jokulsarlon glacier lagoon', description: 'Icebergs drifting out to "Diamond Beach".', imageUrl: img('lake', 800) },
+      ],
+      gallery: [{ url: img('iceland2', 1200), caption: 'South Coast' }],
+    },
+    {
+      slug: 'snaefellsnes',
+      name: 'Snaefellsnes',
+      description: 'Called "Iceland in miniature" - a peninsula with a bit of everything.',
+      funFact: 'Jules Verne chose the Snaefellsjokull glacier as the entrance in "Journey to the Center of the Earth".',
+      heroImageUrl: img('aurora'),
+      activities: [
+        { rank: 1, title: 'Kirkjufell mountain', description: 'The most photographed mountain in Iceland, with waterfalls in front.', imageUrl: img('aurora', 800) },
+        { rank: 2, title: 'Arnarstapi cliffs', description: 'A coastal walk past basalt arches and nesting birds.', imageUrl: img('iceland2', 800) },
+        { rank: 3, title: 'Budir black church', description: 'A lonely black church in a lava field.', imageUrl: img('landscape', 800) },
+        { rank: 4, title: 'Vatnshellir lava cave', description: 'Descend 35 m into an 8,000-year-old lava tube.', imageUrl: img('mountains', 800) },
+        { rank: 5, title: 'Djupalonssandur beach', description: 'Black pebbles and shipwreck remains on a wild shore.', imageUrl: img('iceland2', 800) },
+      ],
+      gallery: [{ url: img('aurora', 1200), caption: 'Kirkjufell under the aurora' }],
+    },
+    {
+      slug: 'akureyri',
+      name: 'North (Akureyri)',
+      description: 'The capital of the north and the gateway to Lake Myvatn and whale country.',
+      funFact: 'Akureyri\'s traffic lights have heart-shaped red lights - a small campaign to cheer people up after the 2008 crisis.',
+      heroImageUrl: img('mountains'),
+      activities: [
+        { rank: 1, title: 'Whale watching in Husavik', description: 'The whale-watching capital of Europe.', imageUrl: img('iceland1', 800) },
+        { rank: 2, title: 'Lake Myvatn', description: 'Pseudo-craters, lava formations and bubbling mud pots.', imageUrl: img('lake', 800) },
+        { rank: 3, title: 'Myvatn Nature Baths', description: 'The quieter, milky-blue cousin of the Blue Lagoon.', imageUrl: img('lake', 800) },
+        { rank: 4, title: 'Godafoss', description: 'The "waterfall of the gods", a perfect horseshoe.', imageUrl: img('iceland1', 800) },
+        { rank: 5, title: 'Dettifoss', description: 'Europe\'s most powerful waterfall.', imageUrl: img('iceland1', 800) },
+      ],
+      gallery: [{ url: img('mountains', 1200), caption: 'North Iceland' }],
+    },
+  ],
+};

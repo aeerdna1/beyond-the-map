@@ -1,0 +1,97 @@
+import type { Destination } from '../types';
+import { img } from './img';
+
+export const morocco: Destination = {
+  slug: 'morocco',
+  name: 'Morocco',
+  flag: '🇲🇦',
+  region: 'Africa',
+  vibes: ['Culture', 'Nature'],
+  tagline: 'Spice markets, blue lanes and nights under the Sahara stars.',
+  description:
+    'Morocco is a feast for the senses: the call to prayer over the medina, mint tea poured from a height, riads hidden behind plain doors and dunes that glow orange at sunset.',
+  bestTimeToVisit: 'March - May and September - November (mild, not too hot in the desert)',
+  heroImageUrl: img('morocco1'),
+  lat: 31.79,
+  lng: -7.09,
+  places: [
+    {
+      slug: 'marrakech',
+      name: 'Marrakech',
+      description: 'The Red City: busy souks, palaces and rooftop sunsets.',
+      funFact: 'Every evening Jemaa el-Fnaa square turns into an open-air food court with storytellers, musicians and over 100 food stalls - a UNESCO "Masterpiece of Intangible Heritage".',
+      heroImageUrl: img('morocco2'),
+      activities: [
+        { rank: 1, title: 'Jemaa el-Fnaa at dusk', description: 'Watch the square transform from a rooftop cafe, then dive into the food stalls.', imageUrl: img('morocco2', 800) },
+        { rank: 2, title: 'Jardin Majorelle', description: 'Cobalt-blue villa and cactus garden once owned by Yves Saint Laurent.', imageUrl: img('morocco3', 800) },
+        { rank: 3, title: 'Get lost in the souks', description: 'Leather, lanterns, spices - and the art of friendly haggling.', imageUrl: img('morocco1', 800) },
+        { rank: 4, title: 'Stay in a riad + hammam', description: 'A courtyard house with a fountain, and a traditional steam scrub.', imageUrl: img('morocco3', 800) },
+        { rank: 5, title: 'Day trip to the Atlas Mountains', description: 'Berber villages, waterfalls and lunch with a view.', imageUrl: img('mountains', 800) },
+      ],
+      gallery: [
+        { url: img('morocco2', 1200), caption: 'Marrakech medina' },
+        { url: img('morocco3', 1200), caption: 'Riad courtyard' },
+      ],
+    },
+    {
+      slug: 'fes',
+      name: 'Fes',
+      description: 'The cultural heart of Morocco and its oldest imperial city.',
+      funFact: 'Fes el-Bali is the largest car-free urban area in the world - goods are still carried by donkey through its 9,000+ alleys.',
+      heroImageUrl: img('morocco1'),
+      activities: [
+        { rank: 1, title: 'Chouara tannery', description: 'See leather dyed in stone vats the same way as 900 years ago.', imageUrl: img('morocco1', 800) },
+        { rank: 2, title: 'Al-Qarawiyyin', description: 'Founded in 859, considered the oldest existing university in the world.', imageUrl: img('morocco3', 800) },
+        { rank: 3, title: 'Bou Inania Madrasa', description: 'Carved cedar, zellige tiles and stucco - a masterpiece of Marinid art.', imageUrl: img('morocco3', 800) },
+        { rank: 4, title: 'Guided medina walk', description: 'A local guide is the best way to find hidden workshops.', imageUrl: img('morocco2', 800) },
+        { rank: 5, title: 'Sunset from the Merenid Tombs', description: 'The whole medina glows below you.', imageUrl: img('morocco1', 800) },
+      ],
+      gallery: [{ url: img('morocco1', 1200), caption: 'Fes' }],
+    },
+    {
+      slug: 'chefchaouen',
+      name: 'Chefchaouen',
+      description: 'The famous blue pearl in the Rif Mountains.',
+      funFact: 'Nobody agrees why the town is blue - theories include keeping mosquitoes away, staying cool, or symbolising the sky and heaven.',
+      heroImageUrl: img('morocco3'),
+      activities: [
+        { rank: 1, title: 'Photograph the blue lanes', description: 'Go early morning for empty streets and soft light.', imageUrl: img('morocco3', 800) },
+        { rank: 2, title: 'Spanish Mosque viewpoint', description: 'A short hike for sunset over the whole blue town.', imageUrl: img('mountains', 800) },
+        { rank: 3, title: 'Akchour waterfalls', description: 'Turquoise pools and the "God\'s Bridge" rock arch.', imageUrl: img('lake', 800) },
+        { rank: 4, title: 'Plaza Uta el-Hammam', description: 'Mint tea and goat cheese in the main square.', imageUrl: img('morocco2', 800) },
+        { rank: 5, title: 'Ras el-Maa spring', description: 'Where locals still wash wool and clothes in the mountain stream.', imageUrl: img('morocco3', 800) },
+      ],
+      gallery: [{ url: img('morocco3', 1200), caption: 'Blue lanes' }],
+    },
+    {
+      slug: 'sahara',
+      name: 'Sahara (Merzouga)',
+      description: 'The Erg Chebbi dunes - up to 150 m high and glowing orange at sunset.',
+      funFact: 'The Sahara is roughly the size of the USA, but only about a quarter of it is sand dunes - the rest is rocky plateaus and gravel plains.',
+      heroImageUrl: img('morocco1'),
+      activities: [
+        { rank: 1, title: 'Camel trek at sunset', description: 'Ride into the dunes as they turn from gold to deep orange.', imageUrl: img('morocco1', 800) },
+        { rank: 2, title: 'Night in a desert camp', description: 'Berber drums by the fire and more stars than you\'ve ever seen.', imageUrl: img('aurora', 800) },
+        { rank: 3, title: 'Sunrise from the top of a dune', description: 'Worth the early climb, every time.', imageUrl: img('morocco1', 800) },
+        { rank: 4, title: 'Sandboarding', description: 'Like snowboarding, but warm.', imageUrl: img('landscape', 800) },
+        { rank: 5, title: 'Todra Gorge on the way', description: 'Canyon walls up to 300 m high.', imageUrl: img('mountains', 800) },
+      ],
+      gallery: [{ url: img('morocco1', 1200), caption: 'Erg Chebbi' }],
+    },
+    {
+      slug: 'essaouira',
+      name: 'Essaouira',
+      description: 'A breezy, whitewashed port town on the Atlantic.',
+      funFact: 'Essaouira\'s walls were a filming location for Astapor in "Game of Thrones".',
+      heroImageUrl: img('landscape'),
+      activities: [
+        { rank: 1, title: 'Skala de la Ville ramparts', description: 'Old cannons and crashing waves at sunset.', imageUrl: img('landscape', 800) },
+        { rank: 2, title: 'Grilled fish at the port', description: 'Pick it from the stall, they grill it in front of you.', imageUrl: img('morocco2', 800) },
+        { rank: 3, title: 'Kitesurfing', description: 'The trade winds make it one of Africa\'s best kite spots.', imageUrl: img('landscape', 800) },
+        { rank: 4, title: 'Argan oil cooperative', description: 'See how women\'s cooperatives make argan oil by hand.', imageUrl: img('morocco3', 800) },
+        { rank: 5, title: 'Horse ride on the beach', description: 'Gallop along the wide sandy bay.', imageUrl: img('landscape', 800) },
+      ],
+      gallery: [{ url: img('landscape', 1200), caption: 'Atlantic coast' }],
+    },
+  ],
+};

@@ -1,0 +1,57 @@
+server:
+  port: ${PORT:8080}
+  # Trust X-Forwarded-* from the hosting proxy (Render/Railway) so rate limiting sees real client IPs.
+  forward-headers-strategy: framework
+
+spring:
+  application:
+    name: beyond-the-map-api
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/beyondthemap}
+    username: ${DB_USER:beyondthemap}
+    password: ${DB_PASSWORD:beyondthemap}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+  flyway:
+    enabled: true
+  mail:
+    host: ${SMTP_HOST:localhost}
+    port: ${SMTP_PORT:587}
+    username: ${SMTP_USER:}
+    password: ${SMTP_PASSWORD:}
+    properties:
+      mail.smtp.auth: ${SMTP_AUTH:true}
+      mail.smtp.starttls.enable: ${SMTP_STARTTLS:true}
+
+app:
+  # Comma-separated list of allowed frontend origins (CORS).
+  cors-origins: ${CORS_ORIGINS:http://localhost:5173}
+  mail:
+    enabled: ${MAIL_ENABLED:false}
+    from: ${MAIL_FROM:hello@example.com}
+    # Where new trip requests are sent (the owner).
+    notify-to: ${MAIL_NOTIFY_TO:hello@example.com}
+  admin:
+    username: ${ADMIN_USER:admin}
+    # Change in production! Plain value is encoded with BCrypt at startup.
+    password: ${ADMIN_PASSWORD:change-me}
+  rate-limit:
+    # Max inquiries per IP per hour.
+    inquiries-per-hour: ${INQUIRY_RATE_LIMIT:5}
+
+---
+# Local development without PostgreSQL: `mvn spring-boot:run -Dspring-boot.run.profiles=dev`
+spring:
+  config:
+    activate:
+      on-profile: dev
+  datasource:
+    url: jdbc:h2:mem:beyondthemap;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DEFAULT_NULL_ORDERING=HIGH
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      # H2 maps TEXT to CLOB, which trips Hibernate's schema validation; Flyway owns the schema anyway.
+      ddl-auto: none

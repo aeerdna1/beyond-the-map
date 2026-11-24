@@ -1,0 +1,36 @@
+package com.beyondthemap.service;
+
+import org.junit.jupiter.api.Test;
+
+import java.time.Clock;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.ZoneOffset;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+class RateLimiterTest {
+
+    /** Mutable clock so the test can move time forward. */
+    static final class TestClock extends Clock {
+        Instant now = Instant.parse("2026-01-01T10:00:00Z");
+
+        @Override public ZoneOffset getZone() { return ZoneOffset.UTC; }
+        @Override public Clock withZone(java.time.ZoneId zone) { return this; }
+        @Override public Instant instant() { return now; }
+    }
+
+    @Test
+    void blocksAfterLimitAndRecoversAfterWindow() {
+        TestClock clock = new TestClock();
+        RateLimiter rl = new RateLimiter(2, clock);
+
+        assertThat(rl.tryAcquire("1.2.3.4")).isTrue();
+        assertThat(rl.tryAcquire("1.2.3.4")).isTrue();
+        assertThat(rl.tryAcquire("1.2.3.4")).isFalse();
+        assertThat(rl.tryAcquire("5.6.7.8")).isTrue();
+
+        clock.now = clock.now.plus(Duration.ofMinutes(61));
+        assertThat(rl.tryAcquire("1.2.3.4")).isTrue();
+    }
+}

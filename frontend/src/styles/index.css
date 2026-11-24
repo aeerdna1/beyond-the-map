@@ -1,0 +1,70 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  h1, h2, h3, h4 {
+    @apply font-serif;
+  }
+}
+
+@layer components {
+  .container-page {
+    @apply mx-auto w-full max-w-6xl px-5 sm:px-8;
+  }
+  /* White text only on deep orange / plum (accessibility note from the plan). */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-sunset px-6 py-3 font-medium text-white shadow-soft transition hover:-translate-y-0.5 hover:bg-coral focus:outline-none focus-visible:ring-4 focus-visible:ring-amber/50;
+  }
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-full border-2 border-plum/15 px-6 py-3 font-medium text-plum transition hover:border-coral hover:text-sunset;
+  }
+  .card {
+    @apply overflow-hidden rounded-card bg-white shadow-soft;
+  }
+  .chip {
+    @apply rounded-full px-4 py-1.5 text-sm font-medium transition;
+  }
+  .input {
+    @apply w-full rounded-xl border border-plum/15 bg-white px-4 py-3 text-plum placeholder:text-plum/40 focus:border-coral focus:outline-none focus:ring-4 focus:ring-coral/20;
+  }
+  .label {
+    @apply mb-1.5 block text-sm font-medium text-plum/80;
+  }
+}
+
+/* Blinking typewriter caret */
+@keyframes blink {
+  50% { opacity: 0; }
+}
+.caret {
+  animation: blink 1s step-end infinite;
+}
+
+/* Floating sun in the hero */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-14px); }
+}
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* Plane flying along the hero flight path (offset-path set inline). */
+@keyframes plane-fly {
+  0% { offset-distance: 0%; opacity: 1; }
+  85% { opacity: 1; }
+  100% { offset-distance: 100%; opacity: 0; }
+}
+.plane-fly {
+  offset-rotate: auto 45deg;
+  animation: plane-fly 1.6s ease-in-out forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .caret, .animate-float { animation: none; }
+}

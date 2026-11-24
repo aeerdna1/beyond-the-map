@@ -1,0 +1,101 @@
+import type { Destination } from '../types';
+import { img } from './img';
+
+export const japan: Destination = {
+  slug: 'japan',
+  name: 'Japan',
+  flag: '🇯🇵',
+  region: 'Asia',
+  vibes: ['Culture', 'Nature'],
+  tagline: 'Neon nights, quiet temples and the art of the little details.',
+  description:
+    'Japan is where ultra-modern cities sit next to thousand-year-old shrines. Every train is on time, every meal is a small ceremony, and every season paints the country in a different colour.',
+  bestTimeToVisit: 'Late March - May (cherry blossoms) and October - November (autumn leaves)',
+  heroImageUrl: img('fuji'),
+  lat: 36.2,
+  lng: 138.25,
+  places: [
+    {
+      slug: 'tokyo',
+      name: 'Tokyo',
+      description: 'A city of 14 million that still feels like a collection of small neighbourhoods, each with its own personality.',
+      funFact: 'Tokyo has more Michelin-starred restaurants than any other city in the world - and some of them are tiny counters with fewer than 10 seats.',
+      heroImageUrl: img('tokyo'),
+      activities: [
+        { rank: 1, title: 'Shibuya Crossing at night', description: 'Watch up to 3,000 people cross at once from the Shibuya Sky rooftop, then join the scramble yourself.', imageUrl: img('tokyo', 800) },
+        { rank: 2, title: 'Senso-ji at sunrise', description: 'Tokyo\'s oldest temple in Asakusa, calm and golden before the crowds arrive.', imageUrl: img('japanStreet', 800) },
+        { rank: 3, title: 'Tsukiji Outer Market breakfast', description: 'Tamagoyaki, fresh sushi and grilled scallops eaten standing at the stalls.', imageUrl: img('japanStreet', 800) },
+        { rank: 4, title: 'teamLab Planets', description: 'Walk barefoot through water and mirrored rooms in an immersive digital art museum.', imageUrl: img('tokyo', 800) },
+        { rank: 5, title: 'Day trip to Mt Fuji / Hakone', description: 'Hot springs, a pirate ship on Lake Ashi and - on a clear day - Fuji in full view.', imageUrl: img('fuji', 800) },
+      ],
+      gallery: [
+        { url: img('tokyo', 1200), caption: 'Tokyo skyline' },
+        { url: img('japanStreet', 1200), caption: 'Evening lanterns' },
+        { url: img('fuji', 1200), caption: 'Mt Fuji from Chureito Pagoda' },
+      ],
+    },
+    {
+      slug: 'kyoto',
+      name: 'Kyoto',
+      description: 'The old imperial capital: wooden machiya houses, moss gardens and lanterns glowing in narrow lanes.',
+      funFact: 'Kyoto has more than 1,600 Buddhist temples and about 400 Shinto shrines. It was spared from bombing in WWII because of its cultural value.',
+      heroImageUrl: img('kyoto'),
+      activities: [
+        { rank: 1, title: 'Fushimi Inari', description: 'Walk the thousands of torii gates at sunrise.', imageUrl: img('kyoto', 800) },
+        { rank: 2, title: 'Arashiyama Bamboo Grove and Tenryu-ji', description: 'Towering bamboo, then a Zen garden that is a UNESCO World Heritage site.', imageUrl: img('japanStreet', 800) },
+        { rank: 3, title: 'Gion at dusk', description: 'Stroll the lantern-lit streets to spot a geiko or maiko on her way to an appointment.', imageUrl: img('japanStreet', 800) },
+        { rank: 4, title: 'Kinkaku-ji, the Golden Pavilion', description: 'A temple covered in gold leaf, perfectly reflected in its mirror pond.', imageUrl: img('kyoto', 800) },
+        { rank: 5, title: 'A tea ceremony or a kaiseki dinner', description: 'Slow down with matcha in a tatami room, or a multi-course seasonal feast.', imageUrl: img('kyoto', 800) },
+      ],
+      gallery: [
+        { url: img('kyoto', 1200), caption: 'Yasaka Pagoda' },
+        { url: img('japanStreet', 1200), caption: 'Lanterns in Gion' },
+      ],
+    },
+    {
+      slug: 'osaka',
+      name: 'Osaka',
+      description: 'Japan\'s kitchen: loud, friendly and obsessed with street food.',
+      funFact: 'Osaka\'s unofficial motto is "kuidaore" - eat until you drop.',
+      heroImageUrl: img('japanStreet'),
+      activities: [
+        { rank: 1, title: 'Dotonbori street food crawl', description: 'Takoyaki, okonomiyaki and kushikatsu under the famous Glico running man sign.', imageUrl: img('japanStreet', 800) },
+        { rank: 2, title: 'Osaka Castle', description: 'Climb the castle for city views and walk the moats lined with cherry trees.', imageUrl: img('kyoto', 800) },
+        { rank: 3, title: 'Kuromon Market', description: 'Grilled wagyu skewers and giant strawberries, straight from the stall.', imageUrl: img('japanStreet', 800) },
+        { rank: 4, title: 'Day trip to Nara', description: 'Bow to the friendly deer and see the giant Buddha in Todai-ji.', imageUrl: img('kyoto', 800) },
+        { rank: 5, title: 'Umeda Sky Building at sunset', description: 'An open-air "floating garden" observatory 173 m above the city.', imageUrl: img('tokyo', 800) },
+      ],
+      gallery: [{ url: img('japanStreet', 1200), caption: 'Osaka by night' }],
+    },
+    {
+      slug: 'okinawa',
+      name: 'Okinawa',
+      description: 'Japan\'s tropical side: turquoise water, coral reefs and a laid-back island culture.',
+      funFact: 'Okinawa is one of the world\'s "Blue Zones", with one of the highest numbers of centenarians on Earth.',
+      heroImageUrl: img('landscape'),
+      activities: [
+        { rank: 1, title: 'Snorkel the Kerama Islands', description: 'Some of the clearest water in the world, with sea turtles as company.', imageUrl: img('landscape', 800) },
+        { rank: 2, title: 'Churaumi Aquarium', description: 'Whale sharks gliding past one of the largest aquarium windows anywhere.', imageUrl: img('lake', 800) },
+        { rank: 3, title: 'Shuri Castle', description: 'The red-lacquered seat of the old Ryukyu Kingdom.', imageUrl: img('kyoto', 800) },
+        { rank: 4, title: 'Kouri Island bridge drive', description: 'A two-kilometre bridge floating over turquoise shallows.', imageUrl: img('road', 800) },
+        { rank: 5, title: 'Okinawan home cooking', description: 'Goya champuru and purple sweet potato - the longevity diet.', imageUrl: img('japanStreet', 800) },
+      ],
+      gallery: [{ url: img('landscape', 1200), caption: 'Okinawa coast' }],
+    },
+    {
+      slug: 'hokkaido',
+      name: 'Hokkaido',
+      description: 'Japan\'s wild north: powder snow, lavender fields and steaming hot springs.',
+      funFact: 'Hokkaido\'s Niseko gets around 15 metres of snow a season - some of the lightest powder on the planet.',
+      heroImageUrl: img('mountains'),
+      activities: [
+        { rank: 1, title: 'Ski or snowboard Niseko', description: 'World-famous powder with Mt Yotei rising behind the slopes.', imageUrl: img('mountains', 800) },
+        { rank: 2, title: 'Sapporo Snow Festival', description: 'Giant ice sculptures every February.', imageUrl: img('mountains', 800) },
+        { rank: 3, title: 'Furano lavender fields', description: 'Purple hills from late June to early August.', imageUrl: img('landscape', 800) },
+        { rank: 4, title: 'Onsen in Noboribetsu', description: 'Soak in sulphur springs next to the steaming "Hell Valley".', imageUrl: img('lake', 800) },
+        { rank: 5, title: 'Fresh seafood in Otaru', description: 'Uni, crab and salmon roe bowls in a canal-side harbour town.', imageUrl: img('japanStreet', 800) },
+      ],
+      gallery: [{ url: img('mountains', 1200), caption: 'Hokkaido in winter' }],
+    },
+  ],
+};
