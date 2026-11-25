@@ -2,11 +2,16 @@ import type { Destination, Place, Region, Vibe } from '../types';
 import { img, IMG } from './img';
 import { hawaii } from './hawaii';
 import { norway } from './norway';
+import { thailand } from './thailand';
+import { bali } from './bali';
+import { malaysia } from './malaysia';
+import { egypt } from './egypt';
+import { italy } from './italy';
 
 // Destinations whose detailed content (top 5 + fun facts) is still to be written.
 // Places are listed so the country page shows them; place pages show "coming soon"
 // until activities are filled in (same shape as japan.ts / iceland.ts / morocco.ts).
-// Fully written destinations (hawaii, norway) live in their own files and are
+// Fully written destinations (thailand, bali, malaysia, hawaii, egypt, italy, norway) live in their own files and are
 // slotted in here only to keep the original display order.
 
 type ImgKey = keyof typeof IMG;
@@ -34,36 +39,16 @@ const d = (
 });
 
 export const others: Destination[] = [
-  d('thailand', 'Thailand', '🇹🇭', 'Asia', ['Beach', 'Culture'],
-    'Golden temples, island hopping and the best street food on Earth.',
-    'From the buzz of Bangkok to the jungles of the north and the limestone islands of the south.',
-    'November - March (cool and dry)', 'thailand', 15.87, 100.99,
-    ['Bangkok', 'Chiang Mai', 'Phuket', 'Krabi']),
-  d('bali', 'Bali', '🇮🇩', 'Islands', ['Beach', 'Culture', 'Nature'],
-    'Rice terraces, temple ceremonies and surf at sunset.',
-    'The Island of the Gods, in Indonesia: spiritual, green and endlessly photogenic.',
-    'April - October (dry season)', 'bali', -8.34, 115.09,
-    ['Ubud', 'Uluwatu', 'Canggu & Seminyak', 'Nusa Penida']),
-  d('malaysia', 'Malaysia', '🇲🇾', 'Asia', ['Culture', 'Nature', 'Beach'],
-    'Skyscrapers, rainforest and a food scene shaped by three cultures.',
-    'Malay, Chinese and Indian flavours meet in cities, islands and one of the oldest rainforests in the world.',
-    'March - October (west coast), varies by region', 'malaysia', 4.21, 101.98,
-    ['Kuala Lumpur', 'Penang', 'Langkawi', 'Borneo (Sabah)']),
+  thailand,
+  bali,
+  malaysia,
   d('singapore', 'Singapore', '🇸🇬', 'Asia', ['Culture'],
     'A garden city of the future, with hawker food from the past.',
     'Tiny, spotless and surprisingly green, with neighbourhoods that each feel like a different country.',
     'February - April (less rain)', 'singapore', 1.35, 103.82,
     ['Marina Bay', 'Sentosa', 'Chinatown & Little India', 'Gardens & Nature']),
   hawaii,
-  d('egypt', 'Egypt', '🇪🇬', 'Africa', ['Culture', 'Beach'],
-    'Pharaohs, the Nile and coral reefs in the Red Sea.',
-    '5,000 years of history along the Nile, plus some of the best diving in the world.',
-    'October - April (cooler)', 'egypt1', 26.82, 30.8,
-    ['Cairo & Giza', 'Luxor', 'Aswan', 'Red Sea (Hurghada)']),
-  d('italy', 'Italy', '🇮🇹', 'Europe', ['Nature', 'Beach', 'Culture'],
-    'Jagged peaks in the north, turquoise coves in the south.',
-    'La dolce vita, starting with the Dolomites and Sardinia - more regions coming soon.',
-    'June - September (Dolomites hiking, Sardinia beaches)', 'dolomites', 41.87, 12.57,
-    ['Dolomites', 'Sardinia']),
+  egypt,
+  italy,
   norway,
 ];
