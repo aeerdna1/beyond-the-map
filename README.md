@@ -95,8 +95,12 @@ Only Japan is translated into Romanian so far (`frontend/src/data/ro/japan.ts`);
 so translations can be updated at any time, also after going live. It replaces all translation rows and
 matches them to the English rows by slug, rank and gallery position, so changing a place slug or the
 gallery order in English also needs the translation updated.
-The admin API only edits English. Replacing a destination through it removes that destination's
-translations until the next deploy re-runs the translation migration.
+
+The admin API only edits English, and it keeps the translations. `PUT /api/admin/destinations/{slug}`
+updates existing places, top 5 items and gallery photos in place (matched by place slug, rank and gallery
+position, the same keys as the translation file), so their translations stay attached. A place, item or photo
+you leave out is deleted together with its translation, and a new one shows English until it is translated.
+A translation still wins over edited English text, so after changing English, update the Romanian text too.
 
 ## REST API
 
@@ -156,7 +160,7 @@ Requests from any other address are limited by their real connection IP.
 ## Tests
 
 ```bash
-cd backend && mvn test      # 13 tests: content API, validation, consent, honeypot, admin auth + password guard, rate limiter, client-IP spoofing
+cd backend && mvn test      # 27 tests: content API (EN/RO), admin edits keep translations, validation, consent, honeypot, admin auth + password guard, mail, rate limiter, client-IP spoofing
 cd frontend && npm run build  # type-check + production build
 ```
 

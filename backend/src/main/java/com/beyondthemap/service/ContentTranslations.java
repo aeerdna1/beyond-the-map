@@ -4,6 +4,7 @@ import com.beyondthemap.model.TripInquiry.Lang;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,7 +29,10 @@ public class ContentTranslations {
     public record Texts(Map<Long, DestinationText> destinations, Map<Long, PlaceText> places,
                         Map<Long, ActivityText> activities, Map<Long, String> captions) {
 
-        public static final Texts NONE = new Texts(Map.of(), Map.of(), Map.of(), Map.of());
+        // Collections.emptyMap() rather than Map.of(): Map.of().get(null) throws, and a row that
+        // is not saved yet has a null id.
+        public static final Texts NONE = new Texts(Collections.emptyMap(), Collections.emptyMap(),
+                Collections.emptyMap(), Collections.emptyMap());
     }
 
     private final NamedParameterJdbcTemplate jdbc;
@@ -40,7 +44,8 @@ public class ContentTranslations {
     /** Destination-level texts for every destination (used by the list endpoint). */
     public Texts forAllDestinations(Lang lang) {
         if (lang == Lang.EN) return Texts.NONE;
-        return new Texts(destinationTexts("", Map.of("lang", lang.code())), Map.of(), Map.of(), Map.of());
+        return new Texts(destinationTexts("", Map.of("lang", lang.code())),
+                Collections.emptyMap(), Collections.emptyMap(), Collections.emptyMap());
     }
 
     /** All texts of one destination: the destination itself, its places, their top 5 and gallery captions. */
