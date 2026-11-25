@@ -1,8 +1,10 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import type { DestinationSummary } from '../types';
+import { useT } from '../i18n';
 
 export default function DestinationCard({ d, index = 0 }: { d: DestinationSummary; index?: number }) {
+  const t = useT();
   return (
     <motion.div
       initial={{ opacity: 0, y: 24 }}
@@ -20,18 +22,18 @@ export default function DestinationCard({ d, index = 0 }: { d: DestinationSummar
           />
           <div className="absolute inset-0 bg-gradient-to-t from-plum/80 via-plum/10 to-transparent" />
           <span className="absolute left-4 top-4 rounded-full bg-white/90 px-3 py-1 text-xs font-medium text-plum">
-            {d.region}
+            {t.regions[d.region] ?? d.region}
           </span>
           <div className="absolute bottom-4 left-4 right-4 text-white">
             <h3 className="text-2xl font-bold">
               {d.flag} {d.name}
             </h3>
-            <p className="text-sm text-white/85">{d.placeCount} places to discover</p>
+            <p className="text-sm text-white/85">{t.card.places(d.placeCount)}</p>
           </div>
         </div>
         <div className="p-5">
           <p className="text-plum/75">{d.tagline}</p>
-          <p className="mt-3 font-medium text-sunset transition group-hover:translate-x-1">Explore →</p>
+          <p className="mt-3 font-medium text-sunset transition group-hover:translate-x-1">{t.card.explore}</p>
         </div>
       </Link>
     </motion.div>

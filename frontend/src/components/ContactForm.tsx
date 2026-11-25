@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -6,38 +6,41 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { api } from '../api/client';
 import { CONTACT, DESTINATIONS } from '../data';
+import { useT, type Dict } from '../i18n';
 
-const schema = z
-  .object({
-    name: z.string().trim().min(2, 'Please tell me your name'),
-    email: z.string().trim().email('That email does not look right'),
-    phone: z.string().trim().max(30).optional(),
-    destinations: z.array(z.string()).min(1, 'Pick at least one destination (or "Not sure yet")'),
-    travelFrom: z.string().optional(),
-    travelTo: z.string().optional(),
-    travelers: z.number({ invalid_type_error: 'How many people?' }).int().min(1).max(50),
-    budget: z.string().min(1, 'Choose a budget range'),
-    travelStyle: z.string().min(1, 'Choose a travel style'),
-    message: z.string().max(2000).optional(),
-    consent: z.boolean().refine((v) => v, 'Please accept so I can contact you'),
-    website: z.string().max(0).optional(), // honeypot
-  })
-  .refine((v) => !v.travelFrom || !v.travelTo || v.travelTo >= v.travelFrom, {
-    path: ['travelTo'],
-    message: 'Return date must be after departure',
-  });
+// Validation messages come from the active dictionary, so the schema is built per language.
+const makeSchema = (e: Dict['form']['errors']) =>
+  z
+    .object({
+      name: z.string().trim().min(2, e.name),
+      email: z.string().trim().email(e.email),
+      phone: z.string().trim().max(30).optional(),
+      destinations: z.array(z.string()).min(1, e.destinations),
+      travelFrom: z.string().optional(),
+      travelTo: z.string().optional(),
+      travelers: z.number({ invalid_type_error: e.travelers }).int(e.travelers).min(1, e.travelers).max(50, e.travelers),
+      budget: z.string().min(1, e.budget),
+      travelStyle: z.string().min(1, e.style),
+      message: z.string().max(2000).optional(),
+      consent: z.boolean().refine((v) => v, e.consent),
+      website: z.string().max(0).optional(), // honeypot
+    })
+    .refine((v) => !v.travelFrom || !v.travelTo || v.travelTo >= v.travelFrom, {
+      path: ['travelTo'],
+      message: e.dates,
+    });
 
-type FormValues = z.infer<typeof schema>;
+type FormValues = z.infer<ReturnType<typeof makeSchema>>;
 
-const BUDGETS = ['< 1,500 EUR / person', '1,500 - 3,000 EUR / person', '3,000 - 5,000 EUR / person', '5,000+ EUR / person'];
-const STYLES = [
-  { v: 'relax', label: '🏝️ Relax' },
-  { v: 'adventure', label: '🧗 Adventure' },
-  { v: 'culture', label: '🏯 Culture' },
-  { v: 'mix', label: '✨ A bit of everything' },
-];
+// Values sent to the API (and shown in the notification email) stay language-independent.
+// Labels come from t.form.budgets, which must keep the same order.
+const BUDGET_VALUES = ['< 1,500 EUR / person', '1,500 - 3,000 EUR / person', '3,000 - 5,000 EUR / person', '5,000+ EUR / person'];
+const STYLE_VALUES = ['relax', 'adventure', 'culture', 'mix'] as const;
 
 export default function ContactForm({ preselect }: { preselect?: string }) {
+  const t = useT();
+  const f = t.form;
+  const schema = useMemo(() => makeSchema(f.errors), [f.errors]);
   const [sent, setSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -71,7 +74,7 @@ export default function ContactForm({ preselect }: { preselect?: string }) {
       });
       setSent(true);
     } catch {
-      setError('Sorry, the form could not be sent right now. Please message me on WhatsApp or by email instead.');
+      setError(f.sendError);
     }
   };
 
@@ -79,8 +82,8 @@ export default function ContactForm({ preselect }: { preselect?: string }) {
     return (
       <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="card p-10 text-center">
         <p className="text-6xl">✈️</p>
-        <h3 className="mt-4 text-3xl font-bold">Thank you!</h3>
-        <p className="mt-2 text-plum/75">I'll get back to you within 24h. A confirmation is on its way to your inbox.</p>
+        <h3 className="mt-4 text-3xl font-bold">{f.thanksTitle}</h3>
+        <p className="mt-2 text-plum/75">{f.thanksText}</p>
       </motion.div>
     );
   }
@@ -92,30 +95,30 @@ export default function ContactForm({ preselect }: { preselect?: string }) {
     <form onSubmit={handleSubmit(onSubmit)} className="card space-y-6 p-6 sm:p-10" noValidate>
       <div className="grid gap-5 sm:grid-cols-2">
         <div>
-          <label className="label" htmlFor="name">Your name *</label>
-          <input id="name" className="input" placeholder="Ana Popescu" {...register('name')} />
+          <label className="label" htmlFor="name">{f.name}</label>
+          <input id="name" className="input" placeholder={f.namePlaceholder} {...register('name')} />
           {err('name')}
         </div>
         <div>
-          <label className="label" htmlFor="email">Email *</label>
-          <input id="email" type="email" className="input" placeholder="ana@email.com" {...register('email')} />
+          <label className="label" htmlFor="email">{f.email}</label>
+          <input id="email" type="email" className="input" placeholder={f.emailPlaceholder} {...register('email')} />
           {err('email')}
         </div>
         <div>
-          <label className="label" htmlFor="phone">Phone / WhatsApp</label>
+          <label className="label" htmlFor="phone">{f.phone}</label>
           <input id="phone" type="tel" className="input" placeholder="+40 ..." {...register('phone')} />
         </div>
         <div>
-          <label className="label" htmlFor="travelers">Travellers *</label>
+          <label className="label" htmlFor="travelers">{f.travelers}</label>
           <input id="travelers" type="number" min={1} max={50} className="input" {...register('travelers', { valueAsNumber: true })} />
           {err('travelers')}
         </div>
       </div>
 
       <fieldset>
-        <legend className="label">Where would you like to go? *</legend>
+        <legend className="label">{f.where}</legend>
         <div className="flex flex-wrap gap-2">
-          {[...DESTINATIONS.map((d) => ({ v: d.slug, label: `${d.flag} ${d.name}` })), { v: 'not-sure', label: '🤔 Not sure yet' }].map((o) => {
+          {[...DESTINATIONS.map((d) => ({ v: d.slug, label: `${d.flag} ${d.name}` })), { v: 'not-sure', label: f.notSure }].map((o) => {
             const on = chosen.includes(o.v);
             return (
               <label key={o.v} className={`chip cursor-pointer border ${on ? 'border-sunset bg-sunset text-white' : 'border-plum/15 bg-white text-plum hover:border-coral'}`}>
@@ -130,29 +133,29 @@ export default function ContactForm({ preselect }: { preselect?: string }) {
 
       <div className="grid gap-5 sm:grid-cols-2">
         <div>
-          <label className="label" htmlFor="travelFrom">From</label>
+          <label className="label" htmlFor="travelFrom">{f.from}</label>
           <input id="travelFrom" type="date" className="input" {...register('travelFrom')} />
         </div>
         <div>
-          <label className="label" htmlFor="travelTo">To</label>
+          <label className="label" htmlFor="travelTo">{f.to}</label>
           <input id="travelTo" type="date" className="input" {...register('travelTo')} />
           {err('travelTo')}
         </div>
         <div>
-          <label className="label" htmlFor="budget">Budget *</label>
+          <label className="label" htmlFor="budget">{f.budget}</label>
           <select id="budget" className="input" {...register('budget')}>
-            <option value="">Choose a range</option>
-            {BUDGETS.map((b) => <option key={b}>{b}</option>)}
+            <option value="">{f.chooseRange}</option>
+            {BUDGET_VALUES.map((v, i) => <option key={v} value={v}>{f.budgets[i] ?? v}</option>)}
           </select>
           {err('budget')}
         </div>
         <fieldset>
-          <legend className="label">Travel style *</legend>
+          <legend className="label">{f.style}</legend>
           <div className="grid grid-cols-2 gap-2">
-            {STYLES.map((s) => (
-              <label key={s.v} className={`chip cursor-pointer border text-center ${style === s.v ? 'border-sunset bg-sunset text-white' : 'border-plum/15 bg-white hover:border-coral'}`}>
-                <input type="radio" value={s.v} className="sr-only" {...register('travelStyle')} />
-                {s.label}
+            {STYLE_VALUES.map((v) => (
+              <label key={v} className={`chip cursor-pointer border text-center ${style === v ? 'border-sunset bg-sunset text-white' : 'border-plum/15 bg-white hover:border-coral'}`}>
+                <input type="radio" value={v} className="sr-only" {...register('travelStyle')} />
+                {f.styles[v]}
               </label>
             ))}
           </div>
@@ -161,8 +164,8 @@ export default function ContactForm({ preselect }: { preselect?: string }) {
       </div>
 
       <div>
-        <label className="label" htmlFor="message">Tell me about your dream trip</label>
-        <textarea id="message" rows={4} className="input" placeholder="Honeymoon? First big trip? Foodie adventure?" {...register('message')} />
+        <label className="label" htmlFor="message">{f.message}</label>
+        <textarea id="message" rows={4} className="input" placeholder={f.messagePlaceholder} {...register('message')} />
       </div>
 
       {/* Honeypot - hidden from humans */}
@@ -172,7 +175,7 @@ export default function ContactForm({ preselect }: { preselect?: string }) {
         <label className="flex items-start gap-3 text-sm text-plum/80">
           <input type="checkbox" className="mt-1 h-4 w-4 accent-sunset" {...register('consent')} />
           <span>
-            I agree that my data is used to contact me about my trip. See the <Link to="/privacy" className="text-sunset underline">Privacy Policy</Link>. *
+            {f.consentBefore}<Link to="/privacy" className="text-sunset underline">{f.consentLink}</Link>{f.consentAfter}
           </span>
         </label>
         {err('consent')}
@@ -186,7 +189,7 @@ export default function ContactForm({ preselect }: { preselect?: string }) {
       )}
 
       <button type="submit" disabled={isSubmitting} className="btn-primary w-full text-lg disabled:opacity-60 sm:w-auto">
-        {isSubmitting ? 'Sending…' : 'Send my trip request ✈'}
+        {isSubmitting ? f.sending : f.submit}
       </button>
     </form>
   );

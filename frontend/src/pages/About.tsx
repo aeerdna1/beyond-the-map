@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { useTitle } from '../hooks/useData';
 import { img } from '../data/img';
 import { DESTINATIONS } from '../data';
+import { useT, type Dict } from '../i18n';
 
 /**
  * Builds a flag emoji from an ISO 3166-1 alpha-2 country code (e.g. 'IT').
@@ -15,9 +16,10 @@ const flag = (code: string) =>
 type Country = [code: string, name: string];
 
 // Countries visited, grouped by continent. Cyprus is listed under Europe and Turkey under Asia.
-const VISITED: { continent: string; countries: Country[] }[] = [
+// `continent` is a key into t.about.continents, so the heading is translated.
+const VISITED: { continent: keyof Dict['about']['continents']; countries: Country[] }[] = [
   {
-    continent: 'Europe',
+    continent: 'europe',
     countries: [
       ['IT', 'Italy'], ['GB', 'United Kingdom'], ['ES', 'Spain'], ['FR', 'France'], ['DE', 'Germany'],
       ['NL', 'Netherlands'], ['BE', 'Belgium'], ['CH', 'Switzerland'], ['MC', 'Monaco'], ['MT', 'Malta'],
@@ -26,22 +28,22 @@ const VISITED: { continent: string; countries: Country[] }[] = [
     ],
   },
   {
-    continent: 'Asia',
+    continent: 'asia',
     countries: [
       ['TH', 'Thailand'], ['MY', 'Malaysia'], ['SG', 'Singapore'], ['ID', 'Indonesia'], ['TR', 'Turkey'],
       ['IL', 'Israel'], ['QA', 'Qatar'], ['BH', 'Bahrain'], ['OM', 'Oman'],
     ],
   },
   {
-    continent: 'Africa',
+    continent: 'africa',
     countries: [['MA', 'Morocco'], ['EG', 'Egypt']],
   },
   {
-    continent: 'North America & the Caribbean',
+    continent: 'northAmerica',
     countries: [['US', 'USA'], ['DO', 'Dominican Republic'], ['BS', 'Bahamas']],
   },
   {
-    continent: 'South America',
+    continent: 'southAmerica',
     countries: [['AR', 'Argentina'], ['CL', 'Chile']],
   },
 ];
@@ -52,32 +54,31 @@ const PLACES_WITH_TOP5 = DESTINATIONS.reduce(
   0,
 );
 
-const STATS = [
-  { n: '35+', l: 'countries' },
-  { n: String(DESTINATIONS.length), l: 'destinations on this site' },
-  { n: String(PLACES_WITH_TOP5), l: 'places with my top 5' },
-  { n: '∞', l: 'sunsets watched' },
+// Stat values; the labels come from t.about.stats.
+const STATS: { n: string; k: keyof Dict['about']['stats'] }[] = [
+  { n: '35+', k: 'countries' },
+  { n: String(DESTINATIONS.length), k: 'destinations' },
+  { n: String(PLACES_WITH_TOP5), k: 'places' },
+  { n: '∞', k: 'sunsets' },
 ];
 
 export default function About() {
-  useTitle('About me');
+  const t = useT();
+  const a = t.about;
+  useTitle(a.kicker);
   return (
     <>
       <section className="container-page grid items-center gap-12 py-16 md:grid-cols-2">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-          <p className="font-medium uppercase tracking-widest text-coral">About me</p>
-          <h1 className="mt-2 text-5xl font-bold leading-tight">35+ countries later, <em className="text-sunset">this is my story</em></h1>
-          <p className="mt-6 text-lg leading-relaxed text-plum/80">
-            After traveling to more than 35 countries, I've collected the places, moments and hidden gems that changed the
-            way I see the world. This is my experience, and I want to share it with you, so your next journey feels like it
-            was made just for you.
-          </p>
+          <p className="font-medium uppercase tracking-widest text-coral">{a.kicker}</p>
+          <h1 className="mt-2 text-5xl font-bold leading-tight">{a.titleStart}<em className="text-sunset">{a.titleEm}</em></h1>
+          {/* Same intro paragraph as the home page teaser. */}
+          <p className="mt-6 text-lg leading-relaxed text-plum/80">{t.home.aboutText}</p>
           <p className="mt-4 text-lg leading-relaxed text-plum/80">
             {/* TODO: personal story - first trip, favourite moment, why you started planning trips for others. */}
-            It started with one backpack and a cheap flight. It turned into a life of sunrise hikes, night markets, glacier
-            walks and conversations with strangers who became friends. Now I want to help you craft a trip that feels like you.
+            {a.story}
           </p>
-          <Link to="/plan-my-trip" className="btn-primary mt-8">Let's plan yours</Link>
+          <Link to="/plan-my-trip" className="btn-primary mt-8">{a.cta}</Link>
         </motion.div>
         <div className="grid grid-cols-2 gap-4">
           {(['planning', 'aurora', 'bali', 'egypt1'] as const).map((k, i) => (
@@ -97,22 +98,22 @@ export default function About() {
       <section className="bg-plum py-14 text-white">
         <div className="container-page grid grid-cols-2 gap-8 text-center md:grid-cols-4">
           {STATS.map((s) => (
-            <div key={s.l}>
+            <div key={s.k}>
               <p className="bg-sunset bg-clip-text font-serif text-5xl font-bold text-transparent">{s.n}</p>
-              <p className="mt-1 text-white/75">{s.l}</p>
+              <p className="mt-1 text-white/75">{a.stats[s.k]}</p>
             </div>
           ))}
         </div>
       </section>
 
       <section className="container-page py-16">
-        <h2 className="text-3xl font-bold">Where I've been</h2>
-        <p className="mt-2 text-plum/70">An interactive map is coming - for now, here is my passport in emoji form.</p>
+        <h2 className="text-3xl font-bold">{a.beenTitle}</h2>
+        <p className="mt-2 text-plum/70">{a.beenIntro}</p>
         <div className="mt-8 space-y-8">
           {VISITED.map((group) => (
             <div key={group.continent}>
               <h3 className="text-xl font-bold">
-                {group.continent} <span className="font-sans text-base font-normal text-plum/60">({group.countries.length})</span>
+                {a.continents[group.continent]} <span className="font-sans text-base font-normal text-plum/60">({group.countries.length})</span>
               </h3>
               <div className="mt-3 flex flex-wrap gap-2">
                 {group.countries.map(([code, name], i) => (

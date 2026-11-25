@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
-
-const LINKS = [
-  { to: '/', label: 'Home' },
-  { to: '/destinations', label: 'Destinations' },
-  { to: '/about', label: 'About me' },
-];
+import { useT } from '../i18n';
 
 export default function Navbar() {
+  const t = useT();
+  const LINKS = [
+    { to: '/', label: t.nav.home },
+    { to: '/destinations', label: t.nav.destinations },
+    { to: '/about', label: t.nav.about },
+  ];
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const { pathname } = useLocation();
@@ -29,7 +30,7 @@ export default function Navbar() {
     >
       <nav className="container-page flex h-16 items-center justify-between">
         <Link to="/" className="flex items-center gap-2 font-serif text-2xl font-bold text-plum">
-          <span className="bg-sunset bg-clip-text text-transparent">Beyond the Map</span>
+          <span className="bg-sunset bg-clip-text text-transparent">{t.meta.siteName}</span>
           <span aria-hidden>✈️</span>
         </Link>
 
@@ -40,13 +41,13 @@ export default function Navbar() {
             </NavLink>
           ))}
           <Link to="/plan-my-trip" className="btn-primary !py-2">
-            Plan my trip
+            {t.nav.planTrip}
           </Link>
         </div>
 
         <button
           className="flex h-10 w-10 items-center justify-center rounded-full text-plum md:hidden"
-          aria-label={open ? 'Close menu' : 'Open menu'}
+          aria-label={open ? t.nav.closeMenu : t.nav.openMenu}
           aria-expanded={open}
           onClick={() => setOpen((o) => !o)}
         >
@@ -65,7 +66,7 @@ export default function Navbar() {
               </NavLink>
             ))}
             <Link to="/plan-my-trip" className="btn-primary">
-              Plan my trip
+              {t.nav.planTrip}
             </Link>
           </div>
         </div>

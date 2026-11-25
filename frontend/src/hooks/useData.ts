@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '../api/client';
+import { useT } from '../i18n';
 
 export const useDestinations = () =>
   useQuery({ queryKey: ['destinations'], queryFn: api.listDestinations });
@@ -13,7 +14,8 @@ export const usePlace = (slug: string, placeSlug: string) =>
 
 /** Basic per-page SEO title. */
 export function useTitle(title?: string) {
+  const { meta } = useT();
   useEffect(() => {
-    document.title = title ? `${title} | Beyond the Map` : 'Beyond the Map - Craft a life that feels like you';
-  }, [title]);
+    document.title = title ? `${title} | ${meta.siteName}` : meta.defaultTitle;
+  }, [title, meta]);
 }

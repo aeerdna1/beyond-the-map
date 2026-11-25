@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import type { GalleryImage } from '../types';
+import { useT } from '../i18n';
 
 /** Responsive photo grid with a simple keyboard-friendly lightbox. */
 export default function Gallery({ images }: { images: GalleryImage[] }) {
+  const t = useT();
   const [open, setOpen] = useState<number | null>(null);
 
   useEffect(() => {
@@ -51,7 +53,7 @@ export default function Gallery({ images }: { images: GalleryImage[] }) {
               <img src={images[open].url} alt={images[open].caption} className="max-h-[80vh] w-auto rounded-card" />
               <figcaption className="mt-3 text-center text-white/90">{images[open].caption}</figcaption>
             </motion.figure>
-            <button className="absolute right-5 top-5 text-3xl text-white" aria-label="Close" onClick={() => setOpen(null)}>×</button>
+            <button className="absolute right-5 top-5 text-3xl text-white" aria-label={t.common.close} onClick={() => setOpen(null)}>×</button>
           </motion.div>
         )}
       </AnimatePresence>
