@@ -39,7 +39,9 @@ services:
       SMTP_PORT: "1025"
       SMTP_AUTH: "false"
       SMTP_STARTTLS: "false"
-      ADMIN_PASSWORD: change-me
+      # Local-only value. The API refuses to start with "change-me" or anything under 12 characters
+      # outside the dev profile. Override it with: ADMIN_PASSWORD=... docker compose up
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-local-docker-admin-only}
     ports:
       - "8080:8080"
 

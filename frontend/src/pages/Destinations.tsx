@@ -5,7 +5,7 @@ import { Loading } from '../components/Status';
 import { useDestinations, useTitle } from '../hooks/useData';
 import type { Region, Vibe } from '../types';
 
-const REGIONS: Region[] = ['Asia', 'Europe', 'Africa', 'Islands'];
+const REGIONS: Region[] = ['Asia', 'Europe', 'Africa', 'South America', 'Islands'];
 const VIBES: Vibe[] = ['Beach', 'Nature', 'Culture'];
 
 export default function Destinations() {

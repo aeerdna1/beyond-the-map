@@ -1,6 +1,6 @@
 // Shapes mirror the Spring Boot DTOs (see backend/.../dto).
 
-export type Region = 'Asia' | 'Europe' | 'Africa' | 'Islands';
+export type Region = 'Asia' | 'Europe' | 'Africa' | 'South America' | 'Islands';
 export type Vibe = 'Beach' | 'Nature' | 'Culture';
 
 export interface Activity {

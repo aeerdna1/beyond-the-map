@@ -41,7 +41,8 @@ app:
     notify-to: ${MAIL_NOTIFY_TO:andreea.barbulescu@yahoo.com}
   admin:
     username: ${ADMIN_USER:admin}
-    # Change in production! Plain value is encoded with BCrypt at startup.
+    # Plain value is encoded with BCrypt at startup. "change-me" only works with the dev profile:
+    # outside dev the app refuses to start unless ADMIN_PASSWORD is set (12+ characters, not the default).
     password: ${ADMIN_PASSWORD:change-me}
   rate-limit:
     # Max inquiries per IP per hour.

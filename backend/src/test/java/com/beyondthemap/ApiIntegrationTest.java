@@ -43,7 +43,7 @@ class ApiIntegrationTest {
     void listsAllSeededDestinations() throws Exception {
         mvc.perform(get("/api/destinations"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(11)))
+                .andExpect(jsonPath("$", hasSize(13)))
                 .andExpect(jsonPath("$[0].slug").value("japan"))
                 .andExpect(jsonPath("$[0].placeCount").value(5))
                 .andExpect(jsonPath("$[0].vibes", contains("Culture", "Nature")));

@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useTitle } from '../hooks/useData';
 import { img } from '../data/img';
+import { DESTINATIONS } from '../data';
 
 /**
  * Builds a flag emoji from an ISO 3166-1 alpha-2 country code (e.g. 'IT').
@@ -39,12 +40,22 @@ const VISITED: { continent: string; countries: Country[] }[] = [
     continent: 'North America & the Caribbean',
     countries: [['US', 'USA'], ['DO', 'Dominican Republic'], ['BS', 'Bahamas']],
   },
+  {
+    continent: 'South America',
+    countries: [['AR', 'Argentina'], ['CL', 'Chile']],
+  },
 ];
+
+// Counted from the site data so they stay correct when destinations are added.
+const PLACES_WITH_TOP5 = DESTINATIONS.reduce(
+  (n, d) => n + d.places.filter((p) => p.activities.length > 0).length,
+  0,
+);
 
 const STATS = [
   { n: '35+', l: 'countries' },
-  { n: '11', l: 'destinations on this site' },
-  { n: '40+', l: 'places with my top 5' },
+  { n: String(DESTINATIONS.length), l: 'destinations on this site' },
+  { n: String(PLACES_WITH_TOP5), l: 'places with my top 5' },
   { n: '∞', l: 'sunsets watched' },
 ];
 

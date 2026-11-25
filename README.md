@@ -88,7 +88,10 @@ The frontend `src/data/*.ts` files are the single source of truth for the seed c
 | DELETE | `/api/admin/inquiries/{id}` | admin | GDPR erasure |
 | PUT / DELETE | `/api/admin/destinations/{slug}` | admin | Create/replace or delete content |
 
-Admin uses HTTP Basic (`ADMIN_USER` / `ADMIN_PASSWORD`, default `admin` / `change-me`; **change this**).
+Admin uses HTTP Basic (`ADMIN_USER` / `ADMIN_PASSWORD`). The default `admin` / `change-me` only works with the
+local `dev` profile. **In any other environment the API refuses to start** unless `ADMIN_PASSWORD` is set to at
+least 12 characters and is not `change-me`. Set it in your hosting provider's environment variables (Render /
+Railway dashboard), never in the repository. To generate one: `openssl rand -base64 24`.
 
 ## Configuration (backend env vars)
 
@@ -99,7 +102,7 @@ Admin uses HTTP Basic (`ADMIN_USER` / `ADMIN_PASSWORD`, default `admin` / `chang
 | `MAIL_ENABLED` | `false` | `true` to actually send |
 | `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD` | | Brevo / SendGrid / Gmail SMTP |
 | `MAIL_FROM`, `MAIL_NOTIFY_TO` | `andreea.barbulescu@yahoo.com` | Sender, and where new requests are sent. `MAIL_FROM` must be an address your SMTP provider is allowed to send as (see below) |
-| `ADMIN_USER`, `ADMIN_PASSWORD` | `admin` / `change-me` | |
+| `ADMIN_USER`, `ADMIN_PASSWORD` | `admin` / `change-me` | **Required in production**: 12+ characters, not the default, or the API will not start |
 | `INQUIRY_RATE_LIMIT` | `5` | Requests per IP per hour |
 
 Frontend: `VITE_API_URL` (API base URL in production), `VITE_USE_LOCAL_DATA=true` (static demo, never calls the API).
@@ -127,7 +130,7 @@ Requests from any other address are limited by their real connection IP.
 ## Tests
 
 ```bash
-cd backend && mvn test      # 11 tests: content API, validation, consent, honeypot, admin auth, rate limiter, client-IP spoofing
+cd backend && mvn test      # 13 tests: content API, validation, consent, honeypot, admin auth + password guard, rate limiter, client-IP spoofing
 cd frontend && npm run build  # type-check + production build
 ```
 
@@ -135,7 +138,7 @@ cd frontend && npm run build  # type-check + production build
 
 **Done:** all pages, responsive layout (mobile hamburger menu, 1/2/3-column grids), coral/sunset/amber design system,
 interactive hero (typewriter + "Start the journey" plane), filters by region and vibe, complete content for
-**all 11 destinations** (49 places with fun fact + top 5), the inquiry pipeline, GDPR consent and privacy page.
+**all 13 destinations** (56 places with fun fact + top 5), the inquiry pipeline, GDPR consent and privacy page.
 
 **Needs your input:**
 - [x] Real **phone / WhatsApp number, email, Instagram** -> `frontend/src/data/index.ts` (`CONTACT`)
