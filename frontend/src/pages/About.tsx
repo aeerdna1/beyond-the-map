@@ -42,10 +42,6 @@ const VISITED: { continent: keyof Dict['about']['continents']; countries: Countr
     continent: 'northAmerica',
     countries: [['US', 'USA'], ['DO', 'Dominican Republic'], ['BS', 'Bahamas']],
   },
-  {
-    continent: 'southAmerica',
-    countries: [['AR', 'Argentina'], ['CL', 'Chile']],
-  },
 ];
 
 // Counted from the site data so they stay correct when destinations are added.
