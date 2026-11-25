@@ -12,6 +12,39 @@ public class TripInquiry {
 
     public enum Status { NEW, CONTACTED, BOOKED, CLOSED }
 
+    /** Site language when the request was sent; stored lowercase ("en", "ro"), see V3 migration. */
+    public enum Lang {
+        EN, RO;
+
+        public String code() {
+            return name().toLowerCase(java.util.Locale.ROOT);
+        }
+
+        /** Maps a request value to a language; null, blank or unknown values fall back to English. */
+        public static Lang fromCode(String code) {
+            if (code != null) {
+                for (Lang l : values()) {
+                    if (l.code().equalsIgnoreCase(code.trim())) return l;
+                }
+            }
+            return EN;
+        }
+    }
+
+    /** Stores Lang as its lowercase code, matching the CHECK constraint in the V3 migration. */
+    @Converter
+    public static class LangConverter implements AttributeConverter<Lang, String> {
+        @Override
+        public String convertToDatabaseColumn(Lang lang) {
+            return (lang == null ? Lang.EN : lang).code();
+        }
+
+        @Override
+        public Lang convertToEntityAttribute(String code) {
+            return Lang.fromCode(code);
+        }
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -46,6 +79,10 @@ public class TripInquiry {
 
     @Column(nullable = false)
     private boolean consent;
+
+    @Convert(converter = LangConverter.class)
+    @Column(nullable = false, length = 5)
+    private Lang lang = Lang.EN;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -82,6 +119,8 @@ public class TripInquiry {
     public void setMessage(String message) { this.message = message; }
     public boolean isConsent() { return consent; }
     public void setConsent(boolean consent) { this.consent = consent; }
+    public Lang getLang() { return lang; }
+    public void setLang(Lang lang) { this.lang = lang == null ? Lang.EN : lang; }
     public Status getStatus() { return status; }
     public void setStatus(Status status) { this.status = status; }
     public OffsetDateTime getCreatedAt() { return createdAt; }

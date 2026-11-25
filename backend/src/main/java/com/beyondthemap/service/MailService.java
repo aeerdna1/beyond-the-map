@@ -28,13 +28,28 @@ public class MailService {
         this.props = props;
     }
 
+    /** Subject and body of an email. */
+    record Mail(String subject, String body) {
+    }
+
     @Async
     public void sendInquiryEmails(TripInquiry i) {
-        send(props.mail().notifyTo(), i.getEmail(),
-                "New trip request from " + i.getName(),
+        Mail owner = ownerNotification(i);
+        send(props.mail().notifyTo(), i.getEmail(), owner.subject(), owner.body());
+
+        Mail visitor = visitorConfirmation(i);
+        send(i.getEmail(), props.mail().notifyTo(), visitor.subject(), visitor.body());
+    }
+
+    /** Notification to the owner. Always in English; it says which language to reply in. */
+    static Mail ownerNotification(TripInquiry i) {
+        String reply = i.getLang() == TripInquiry.Lang.RO ? "Romanian (ro)" : "English (en)";
+        return new Mail(
+                "New trip request from " + i.getName() + " [" + i.getLang().code() + "]",
                 """
                 New "Plan my trip" request (#%d)
 
+                Reply in:     %s
                 Name:         %s
                 Email:        %s
                 Phone:        %s
@@ -46,11 +61,27 @@ public class MailService {
 
                 Message:
                 %s
-                """.formatted(i.getId(), i.getName(), i.getEmail(), orDash(i.getPhone()), i.getDestinations(),
+                """.formatted(i.getId(), reply, i.getName(), i.getEmail(), orDash(i.getPhone()), i.getDestinations(),
                         orDash(i.getTravelFrom()), orDash(i.getTravelTo()), i.getTravelers(), i.getBudget(),
                         i.getTravelStyle(), orDash(i.getMessage())));
+    }
 
-        send(i.getEmail(), props.mail().notifyTo(),
+    /** Confirmation to the visitor, in the language they used on the site. */
+    static Mail visitorConfirmation(TripInquiry i) {
+        if (i.getLang() == TripInquiry.Lang.RO) {
+            return new Mail(
+                    "Mulțumesc! Călătoria ta începe aici",
+                    """
+                    Bună, %s,
+
+                    Mulțumesc pentru cererea ta de călătorie! Îți răspund în 24 de ore cu idei
+                    și pașii următori.
+
+                    Pe curând,
+                    Beyond the Map
+                    """.formatted(i.getName()));
+        }
+        return new Mail(
                 "Thank you! Your journey starts here",
                 """
                 Hi %s,

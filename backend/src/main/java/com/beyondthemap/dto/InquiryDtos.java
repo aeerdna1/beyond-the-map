@@ -25,6 +25,8 @@ public final class InquiryDtos {
             @NotBlank @Size(max = 40) String travelStyle,
             @Size(max = 2000) String message,
             @AssertTrue(message = "consent is required") boolean consent,
+            /* Site language ("en" or "ro"); picks the confirmation email language. Optional, defaults to "en". */
+            @Pattern(regexp = "en|ro", message = "lang must be en or ro") String lang,
             /* Honeypot field - real users never fill it in. */
             String website) {
 
@@ -47,6 +49,8 @@ public final class InquiryDtos {
             String budget,
             String travelStyle,
             String message,
+            /* "en" or "ro": the language to reply in. */
+            String lang,
             TripInquiry.Status status,
             OffsetDateTime createdAt) {
     }

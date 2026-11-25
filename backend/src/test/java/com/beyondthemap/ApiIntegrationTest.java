@@ -1,5 +1,6 @@
 package com.beyondthemap;
 
+import com.beyondthemap.model.TripInquiry;
 import com.beyondthemap.repository.TripInquiryRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -70,6 +71,35 @@ class ApiIntegrationTest {
         mvc.perform(post("/api/inquiries").contentType(MediaType.APPLICATION_JSON).content(VALID_INQUIRY))
                 .andExpect(status().isAccepted());
         assertThat(inquiries.count()).isEqualTo(1);
+    }
+
+    @Test
+    void inquiryWithoutLangIsStoredAsEnglish() throws Exception {
+        mvc.perform(post("/api/inquiries").contentType(MediaType.APPLICATION_JSON).content(VALID_INQUIRY))
+                .andExpect(status().isAccepted());
+        assertThat(inquiries.findAll()).singleElement()
+                .extracting(TripInquiry::getLang).isEqualTo(TripInquiry.Lang.EN);
+    }
+
+    @Test
+    void storesRomanianLanguageAndShowsItToTheAdmin() throws Exception {
+        mvc.perform(post("/api/inquiries").contentType(MediaType.APPLICATION_JSON)
+                        .content(VALID_INQUIRY.replace("\"consent\":true", "\"consent\":true,\"lang\":\"ro\"")))
+                .andExpect(status().isAccepted());
+        assertThat(inquiries.findAll()).singleElement()
+                .extracting(TripInquiry::getLang).isEqualTo(TripInquiry.Lang.RO);
+        mvc.perform(get("/api/admin/inquiries").with(httpBasic("admin", "change-me")))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content[0].lang").value("ro"));
+    }
+
+    @Test
+    void rejectsUnknownLanguage() throws Exception {
+        mvc.perform(post("/api/inquiries").contentType(MediaType.APPLICATION_JSON)
+                        .content(VALID_INQUIRY.replace("\"consent\":true", "\"consent\":true,\"lang\":\"fr\"")))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errors.lang").exists());
+        assertThat(inquiries.count()).isZero();
     }
 
     @Test

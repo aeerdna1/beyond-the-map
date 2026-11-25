@@ -49,6 +49,7 @@ public class InquiryService {
         i.setTravelStyle(r.travelStyle());
         i.setMessage(blankToNull(r.message()));
         i.setConsent(r.consent());
+        i.setLang(TripInquiry.Lang.fromCode(r.lang()));
         repo.save(i);
         mail.sendInquiryEmails(i);
     }
@@ -76,8 +77,8 @@ public class InquiryService {
     private static InquiryView toView(TripInquiry i) {
         List<String> dest = i.getDestinations() == null ? List.of() : Arrays.asList(i.getDestinations().split(","));
         return new InquiryView(i.getId(), i.getName(), i.getEmail(), i.getPhone(), dest, i.getTravelFrom(),
-                i.getTravelTo(), i.getTravelers(), i.getBudget(), i.getTravelStyle(), i.getMessage(), i.getStatus(),
-                i.getCreatedAt());
+                i.getTravelTo(), i.getTravelers(), i.getBudget(), i.getTravelStyle(), i.getMessage(),
+                i.getLang().code(), i.getStatus(), i.getCreatedAt());
     }
 
     private static String blankToNull(String s) {
