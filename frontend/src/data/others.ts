@@ -1,9 +1,13 @@
 import type { Destination, Place, Region, Vibe } from '../types';
 import { img, IMG } from './img';
+import { hawaii } from './hawaii';
+import { norway } from './norway';
 
 // Destinations whose detailed content (top 5 + fun facts) is still to be written.
 // Places are listed so the country page shows them; place pages show "coming soon"
 // until activities are filled in (same shape as japan.ts / iceland.ts / morocco.ts).
+// Fully written destinations (hawaii, norway) live in their own files and are
+// slotted in here only to keep the original display order.
 
 type ImgKey = keyof typeof IMG;
 
@@ -50,11 +54,7 @@ export const others: Destination[] = [
     'Tiny, spotless and surprisingly green, with neighbourhoods that each feel like a different country.',
     'February - April (less rain)', 'singapore', 1.35, 103.82,
     ['Marina Bay', 'Sentosa', 'Chinatown & Little India', 'Gardens & Nature']),
-  d('hawaii', 'Hawaii', '🌺', 'Islands', ['Beach', 'Nature'],
-    'Volcanoes, rainbows and the true spirit of aloha.',
-    'A US state in the middle of the Pacific, where every island has its own personality.',
-    'April - May and September - October', 'hawaii1', 20.8, -156.33,
-    ['Oahu', 'Maui', 'Big Island', 'Kauai']),
+  hawaii,
   d('egypt', 'Egypt', '🇪🇬', 'Africa', ['Culture', 'Beach'],
     'Pharaohs, the Nile and coral reefs in the Red Sea.',
     '5,000 years of history along the Nile, plus some of the best diving in the world.',
@@ -65,9 +65,5 @@ export const others: Destination[] = [
     'La dolce vita, starting with the Dolomites and Sardinia - more regions coming soon.',
     'June - September (Dolomites hiking, Sardinia beaches)', 'dolomites', 41.87, 12.57,
     ['Dolomites', 'Sardinia']),
-  d('norway', 'Norway', '🇳🇴', 'Europe', ['Nature'],
-    'Fjords, fishing villages and the Northern Lights.',
-    'Dramatic fjords, red cabins on the water and Arctic adventures above the polar circle.',
-    'June - August (fjords) and October - March (aurora)', 'norway1', 60.47, 8.47,
-    ['Oslo', 'Bergen & the Fjords', 'Lofoten', 'Tromso']),
+  norway,
 ];
