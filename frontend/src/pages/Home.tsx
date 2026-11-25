@@ -4,7 +4,7 @@ import Hero from '../components/Hero';
 import DestinationCard from '../components/DestinationCard';
 import { Loading } from '../components/Status';
 import { useDestinations, useTitle } from '../hooks/useData';
-import { FEATURED } from '../data';
+import { FEATURED } from '../data/site';
 import { img } from '../data/img';
 import { useT } from '../i18n';
 

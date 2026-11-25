@@ -1,18 +1,27 @@
 import type { Destination, DestinationTranslation, Place, PlaceTranslation } from '../types';
-import { ro } from './ro';
 
 /** Languages that have translated destination content. English is the base data itself. */
 export type ContentLang = 'ro';
 
-/**
- * Translated destination content per language and destination slug. Used for the offline
- * fallback here and turned into R__seed_translations.sql for the backend (npm run seed:sql).
- */
-export const TRANSLATIONS: Record<ContentLang, Record<string, DestinationTranslation>> = { ro };
+/** Translated destination content of one language, keyed by destination slug. */
+export type ContentTranslations = Record<string, DestinationTranslation>;
 
-/** The translation of one destination, or undefined for English and untranslated destinations. */
-export function translationFor(lang: string, slug: string): DestinationTranslation | undefined {
-  return lang in TRANSLATIONS ? TRANSLATIONS[lang as ContentLang][slug] : undefined;
+// Each language is a separate file that is only downloaded the first time that language is
+// needed (the browser keeps the module, so later calls are instant). To add a language, add a
+// loader here and extend ContentLang. The seed generator reads every language through these
+// loaders to write R__seed_translations.sql.
+const LOADERS: Record<ContentLang, () => Promise<ContentTranslations>> = {
+  ro: () => import('./ro').then((m) => m.ro),
+};
+
+export const CONTENT_LANGS = Object.keys(LOADERS) as ContentLang[];
+
+// hasOwnProperty rather than `in`: `'toString' in LOADERS` is true through the prototype.
+const isContentLang = (lang: string): lang is ContentLang => Object.prototype.hasOwnProperty.call(LOADERS, lang);
+
+/** The translations of a language; an empty map for English and for unknown languages. */
+export function loadContentTranslations(lang: string): Promise<ContentTranslations> {
+  return isContentLang(lang) ? LOADERS[lang]() : Promise.resolve({});
 }
 
 // Same rule as the backend (DestinationService.or): a missing or blank translation shows English.

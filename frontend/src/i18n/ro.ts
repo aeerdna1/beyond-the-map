@@ -60,6 +60,9 @@ const ro: Dict = {
       place: 'Nu am găsit acest loc.',
     },
     seeAll: 'Vezi toate destinațiile',
+    loadErrorTitle: 'Pagina nu s-a încărcat',
+    loadErrorText: 'Verifică-ți conexiunea și încearcă din nou.',
+    reload: 'Încearcă din nou',
   },
   card: {
     places: (n: number) => `${n} ${deFor(n)}${n === 1 ? 'loc' : 'locuri'} de descoperit`,

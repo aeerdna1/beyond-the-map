@@ -23,13 +23,17 @@ await build({
   stdin: {
     contents:
       "export { DESTINATIONS } from './src/data/index.ts';\n" +
-      "export { TRANSLATIONS } from './src/data/translations.ts';\n",
+      "export { CONTENT_LANGS, loadContentTranslations } from './src/data/translations.ts';\n",
     resolveDir: root,
     loader: 'ts',
   },
   bundle: true, format: 'esm', platform: 'node', outfile: tmp, logLevel: 'error',
 });
-const { DESTINATIONS, TRANSLATIONS } = await import(`${pathToFileURL(tmp).href}?t=${Date.now()}`);
+const { DESTINATIONS, CONTENT_LANGS, loadContentTranslations } = await import(`${pathToFileURL(tmp).href}?t=${Date.now()}`);
+// Same loaders the site uses (src/data/translations.ts); esbuild inlines their dynamic imports.
+const TRANSLATIONS = Object.fromEntries(
+  await Promise.all(CONTENT_LANGS.map(async (lang) => [lang, await loadContentTranslations(lang)])),
+);
 
 const q = (v) => (v === undefined || v === null || v === '' ? 'NULL' : `'${String(v).replace(/'/g, "''")}'`);
 const destId = (d) => `(SELECT id FROM destination WHERE slug = ${q(d.slug)})`;

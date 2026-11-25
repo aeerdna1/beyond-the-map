@@ -1,5 +1,5 @@
 import { useTitle } from '../hooks/useData';
-import { CONTACT } from '../data';
+import { CONTACT } from '../data/site';
 import { useT } from '../i18n';
 
 // NOTE: have this policy reviewed by someone qualified before launch (GDPR, EU personal data).

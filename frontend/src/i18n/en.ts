@@ -61,6 +61,9 @@ const en = {
       place: "We couldn't find this place.",
     },
     seeAll: 'See all destinations',
+    loadErrorTitle: "This page didn't load",
+    loadErrorText: 'Check your connection, then try again.',
+    reload: 'Try again',
   },
   card: {
     places: (n: number) => `${n} ${n === 1 ? 'place' : 'places'} to discover`,

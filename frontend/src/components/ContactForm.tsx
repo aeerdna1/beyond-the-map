@@ -5,8 +5,8 @@ import { z } from 'zod';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { api } from '../api/client';
-import { CONTACT, DESTINATIONS } from '../data';
-import { translationFor } from '../data/translations';
+import { CONTACT } from '../data/site';
+import { useDestinations } from '../hooks/useData';
 import { useLang, useT, type Dict } from '../i18n';
 
 // Validation messages come from the active dictionary, so the schema is built per language.
@@ -70,6 +70,8 @@ export default function ContactForm({ preselect }: { preselect?: string }) {
 
   const chosen = watch('destinations') ?? [];
   const style = watch('travelStyle');
+  // Same list (and query cache) as the destination pages, already in the visitor's language.
+  const { data: destinations } = useDestinations();
 
   const onSubmit = async (data: FormValues) => {
     setError(null);
@@ -132,7 +134,7 @@ export default function ContactForm({ preselect }: { preselect?: string }) {
         <legend className="label">{f.where}</legend>
         <div className="flex flex-wrap gap-2">
           {[
-            ...DESTINATIONS.map((d) => ({ v: d.slug, label: `${d.flag} ${translationFor(lang, d.slug)?.name || d.name}` })),
+            ...(destinations ?? []).map((d) => ({ v: d.slug, label: `${d.flag} ${d.name}` })),
             { v: 'not-sure', label: f.notSure },
           ].map((o) => {
             const on = chosen.includes(o.v);

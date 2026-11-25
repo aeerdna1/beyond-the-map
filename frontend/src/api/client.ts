@@ -1,5 +1,4 @@
-import { DESTINATIONS } from '../data';
-import { localizeDestination, localizePlace, translationFor } from '../data/translations';
+import { loadContentTranslations, localizeDestination, localizePlace } from '../data/translations';
 import type { Lang } from '../i18n';
 import type { Destination, DestinationSummary, Place, TripInquiry } from '../types';
 
@@ -16,7 +15,7 @@ async function get<T>(path: string): Promise<T> {
 }
 
 /** Try the API first; if it is down (or not deployed yet), use local seed data. */
-async function withFallback<T>(remote: () => Promise<T>, local: () => T): Promise<T> {
+async function withFallback<T>(remote: () => Promise<T>, local: () => Promise<T>): Promise<T> {
   if (LOCAL_ONLY) return local();
   try {
     return await remote();
@@ -24,6 +23,10 @@ async function withFallback<T>(remote: () => Promise<T>, local: () => T): Promis
     return local();
   }
 }
+
+// The seed data (every destination in English) is a separate file. It is only downloaded when
+// the API cannot be reached, so normal visitors never load it.
+const loadSeed = () => import('../data').then((m) => m.DESTINATIONS);
 
 // English is the API default, so English URLs stay unchanged (and share one cache entry).
 const langQuery = (lang: Lang) => (lang === 'en' ? '' : `?lang=${lang}`);
@@ -34,7 +37,10 @@ const toSummary = ({ places, ...rest }: Destination): DestinationSummary => ({
 });
 
 /** Local seed data in the given language (untranslated texts stay English, like the API). */
-const localDestination = (d: Destination, lang: Lang) => localizeDestination(d, translationFor(lang, d.slug));
+async function localDestinations(lang: Lang): Promise<Destination[]> {
+  const [all, tx] = await Promise.all([loadSeed(), loadContentTranslations(lang)]);
+  return all.map((d) => localizeDestination(d, tx[d.slug]));
+}
 
 export class NotFoundError extends Error {}
 
@@ -42,26 +48,27 @@ export const api = {
   listDestinations: (lang: Lang) =>
     withFallback(
       () => get<DestinationSummary[]>(`/api/destinations${langQuery(lang)}`),
-      () => DESTINATIONS.map((d) => toSummary(localDestination(d, lang))),
+      async () => (await localDestinations(lang)).map(toSummary),
     ),
 
   getDestination: (slug: string, lang: Lang) =>
     withFallback(
       () => get<Destination>(`/api/destinations/${slug}${langQuery(lang)}`),
-      () => {
-        const d = DESTINATIONS.find((x) => x.slug === slug);
+      async () => {
+        const d = (await localDestinations(lang)).find((x) => x.slug === slug);
         if (!d) throw new NotFoundError(slug);
-        return localDestination(d, lang);
+        return d;
       },
     ),
 
   getPlace: (slug: string, placeSlug: string, lang: Lang) =>
     withFallback(
       () => get<Place>(`/api/destinations/${slug}/places/${placeSlug}${langQuery(lang)}`),
-      () => {
-        const p = DESTINATIONS.find((x) => x.slug === slug)?.places.find((x) => x.slug === placeSlug);
+      async () => {
+        const [all, tx] = await Promise.all([loadSeed(), loadContentTranslations(lang)]);
+        const p = all.find((x) => x.slug === slug)?.places.find((x) => x.slug === placeSlug);
         if (!p) throw new NotFoundError(placeSlug);
-        return localizePlace(p, translationFor(lang, slug)?.places?.[placeSlug]);
+        return localizePlace(p, tx[slug]?.places?.[placeSlug]);
       },
     ),
 

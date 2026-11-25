@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { CONTACT } from '../data';
+import { CONTACT } from '../data/site';
 import { useT } from '../i18n';
 
 export default function Footer() {

@@ -1,7 +1,7 @@
 import { useSearchParams } from 'react-router-dom';
 import ContactForm from '../components/ContactForm';
 import { useTitle } from '../hooks/useData';
-import { CONTACT } from '../data';
+import { CONTACT } from '../data/site';
 import { useT } from '../i18n';
 
 export default function PlanTrip() {

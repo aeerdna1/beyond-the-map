@@ -5,9 +5,10 @@ import { LANGS, LANG_NAMES, useLang, useT } from '../i18n';
 /** EN / RO segmented switch. The active language is marked with aria-pressed. */
 function LangSwitch({ className = '' }: { className?: string }) {
   const t = useT();
-  const { lang, setLang } = useLang();
+  const { lang, setLang, pending } = useLang();
   return (
-    <div role="group" aria-label={t.nav.language} className={`inline-flex rounded-full border border-plum/15 bg-white/70 p-0.5 text-sm ${className}`}>
+    // aria-busy while a language file downloads; the chosen button pulses until it is shown.
+    <div role="group" aria-label={t.nav.language} aria-busy={pending !== null} className={`inline-flex rounded-full border border-plum/15 bg-white/70 p-0.5 text-sm ${className}`}>
       {LANGS.map((l) => (
         <button
           key={l}
@@ -16,7 +17,7 @@ function LangSwitch({ className = '' }: { className?: string }) {
           title={LANG_NAMES[l]}
           aria-pressed={lang === l}
           onClick={() => setLang(l)}
-          className={`rounded-full px-3 py-1 font-semibold transition ${lang === l ? 'bg-sunset text-white' : 'text-plum hover:text-sunset'}`}
+          className={`rounded-full px-3 py-1 font-semibold transition ${lang === l ? 'bg-sunset text-white' : 'text-plum hover:text-sunset'} ${pending === l ? 'animate-pulse' : ''}`}
         >
           {l.toUpperCase()}
         </button>

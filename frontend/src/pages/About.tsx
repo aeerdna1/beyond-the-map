@@ -1,8 +1,7 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { useTitle } from '../hooks/useData';
+import { useDestinations, useTitle } from '../hooks/useData';
 import { img } from '../data/img';
-import { DESTINATIONS } from '../data';
 import { useT, type Dict } from '../i18n';
 
 /**
@@ -44,24 +43,20 @@ const VISITED: { continent: keyof Dict['about']['continents']; countries: Countr
   },
 ];
 
-// Counted from the site data so they stay correct when destinations are added.
-const PLACES_WITH_TOP5 = DESTINATIONS.reduce(
-  (n, d) => n + d.places.filter((p) => p.activities.length > 0).length,
-  0,
-);
-
-// Stat values; the labels come from t.about.stats.
-const STATS: { n: string; k: keyof Dict['about']['stats'] }[] = [
-  { n: '35+', k: 'countries' },
-  { n: String(DESTINATIONS.length), k: 'destinations' },
-  { n: String(PLACES_WITH_TOP5), k: 'places' },
-  { n: '∞', k: 'sunsets' },
-];
-
 export default function About() {
   const t = useT();
   const a = t.about;
   useTitle(a.kicker);
+  // Counted from the destination list (same cached query as the other pages), so the numbers
+  // stay correct when destinations are added. Every place has its top 5.
+  const { data } = useDestinations();
+  // Stat values; the labels come from t.about.stats. "..." until the list has loaded.
+  const STATS: { n: string; k: keyof Dict['about']['stats'] }[] = [
+    { n: '35+', k: 'countries' },
+    { n: data ? String(data.length) : '...', k: 'destinations' },
+    { n: data ? String(data.reduce((sum, d) => sum + d.placeCount, 0)) : '...', k: 'places' },
+    { n: '∞', k: 'sunsets' },
+  ];
   return (
     <>
       <section className="container-page grid items-center gap-12 py-16 md:grid-cols-2">
