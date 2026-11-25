@@ -1,12 +1,19 @@
+import { lazy, Suspense, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import Hero from '../components/Hero';
 import DestinationCard from '../components/DestinationCard';
 import { Loading } from '../components/Status';
+import OptionalBoundary from '../components/OptionalBoundary';
+import { GlobePlaceholder } from '../components/GeoPlaceholders';
 import { useDestinations, useTitle } from '../hooks/useData';
 import { FEATURED } from '../data/site';
 import { img } from '../data/img';
 import { useT } from '../i18n';
+
+// The globe and its map data are a separate download, so the top of the home page shows
+// without waiting for them.
+const Globe = lazy(() => import('../components/Globe'));
 
 // One icon per step; the step titles and texts come from t.home.steps (same order).
 const STEP_ICONS = ['💬', '🗺️', '✈️'];
@@ -18,6 +25,10 @@ export default function Home() {
   const { data, isLoading } = useDestinations();
   const featured = (data ?? []).filter((d) => FEATURED.includes(d.slug))
     .sort((a, b) => FEATURED.indexOf(a.slug) - FEATURED.indexOf(b.slug));
+  // Every destination with coordinates gets a pin (the API may send null for new ones).
+  const pinned = (data ?? []).filter((d) => Number.isFinite(d.lat) && Number.isFinite(d.lng));
+  // Destination the globe turns to: set by pointing at (or tabbing to) a name in the list.
+  const [focus, setFocus] = useState<string | null>(null);
 
   return (
     <>
@@ -56,6 +67,42 @@ export default function Home() {
               {featured.map((d, i) => <DestinationCard key={d.slug} d={d} index={i} />)}
             </div>
           )}
+        </div>
+      </section>
+
+      {/* Globe */}
+      <section className="relative isolate overflow-hidden py-20">
+        <div className="absolute right-[-10rem] top-10 -z-10 h-96 w-96 rounded-full bg-amber opacity-25 blur-3xl" />
+        <div className="container-page grid items-center gap-12 lg:grid-cols-[1fr_1.1fr]">
+          <motion.div initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
+            <p className="font-medium uppercase tracking-widest text-coral">{h.globeKicker}</p>
+            <h2 className="mt-2 text-4xl font-bold">{h.globeTitle}</h2>
+            <p className="mt-5 text-lg leading-relaxed text-plum/80">{h.globeText}</p>
+            {/* The same destinations as the pins. Pointing at one (or Tab) turns the globe to it. */}
+            <ul className="mt-7 flex flex-wrap gap-2">
+              {pinned.map((d) => (
+                <li key={d.slug}>
+                  <Link
+                    to={`/destinations/${d.slug}`}
+                    onMouseEnter={() => setFocus(d.slug)}
+                    onMouseLeave={() => setFocus(null)}
+                    onFocus={() => setFocus(d.slug)}
+                    onBlur={() => setFocus(null)}
+                    className={`chip inline-block border transition-colors ${focus === d.slug ? 'border-sunset bg-sunset text-white' : 'border-plum/10 bg-white hover:border-coral'}`}
+                  >
+                    <span aria-hidden="true">{d.flag}</span> {d.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </motion.div>
+          <div className="mx-auto w-full max-w-[520px]">
+            <OptionalBoundary fallback={<GlobePlaceholder />}>
+              <Suspense fallback={<GlobePlaceholder />}>
+                <Globe destinations={pinned} focus={focus} label={h.globeLabel} />
+              </Suspense>
+            </OptionalBoundary>
+          </div>
         </div>
       </section>
 

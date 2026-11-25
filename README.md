@@ -174,12 +174,15 @@ interactive hero (typewriter + "Start the journey" plane), filters by region and
 - [x] Real **phone / WhatsApp number, email, Instagram** -> `frontend/src/data/index.ts` (`CONTACT`)
 - [ ] **Your own photos.** The current ones are Unsplash placeholders and are reused across places -> `frontend/src/data/img.ts`
 - [x] Top 5 + fun facts for every destination (please proofread and add your own experiences)
-- [ ] Your personal story -> `frontend/src/pages/About.tsx` (the visited-countries list is done)
+- [ ] Your personal story -> `frontend/src/pages/About.tsx` (the visited-countries list and map are done;
+      to add a country, add a row in `frontend/src/data/visited.ts`)
 - [ ] Have the privacy policy reviewed by someone qualified -> `frontend/src/pages/Privacy.tsx`
       (bump `LAST_UPDATED` whenever you change it)
 - [ ] Domain name, hosting choice, SMTP provider
-- [ ] Romanian destination content for the other 12 destinations (Japan is done, the rest shows English)
+- [x] Romanian destination content for all 13 destinations (please proofread)
       -> `frontend/src/data/ro/` (see "Translating destination content")
+- [x] 3D destination globe on the home page and interactive visited-countries map on About
+      (d3-geo + world-atlas, loaded on demand so the first page load stays small)
 
-**Not built yet (from the roadmap):** 3D globe (desktop only), admin UI (the admin API exists),
+**Not built yet (from the roadmap):** admin UI (the admin API exists),
 testimonials, blog, newsletter, Cloudinary image pipeline, SEO sitemap, analytics.

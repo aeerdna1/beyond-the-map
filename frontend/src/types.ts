@@ -35,7 +35,7 @@ export interface Destination {
   description: string;
   bestTimeToVisit: string;
   heroImageUrl: string;
-  /** Approximate coordinates, reserved for the desktop globe. */
+  /** Approximate coordinates of the pin on the home page globe. */
   lat: number;
   lng: number;
   places: Place[];
