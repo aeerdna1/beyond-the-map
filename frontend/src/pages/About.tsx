@@ -1,16 +1,44 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useTitle } from '../hooks/useData';
-import { DESTINATIONS } from '../data';
 import { img } from '../data/img';
 
-// TODO: replace with the real list of 35+ visited countries.
-const VISITED = [
-  ...DESTINATIONS.map((d) => `${d.flag} ${d.name}`),
-  '🇫🇷 France', '🇪🇸 Spain', '🇵🇹 Portugal', '🇬🇷 Greece', '🇭🇷 Croatia', '🇦🇹 Austria', '🇨🇭 Switzerland',
-  '🇩🇪 Germany', '🇳🇱 Netherlands', '🇬🇧 United Kingdom', '🇻🇳 Vietnam', '🇰🇭 Cambodia', '🇹🇷 Turkey',
-  '🇦🇪 UAE', '🇲🇻 Maldives', '🇺🇸 USA', '🇲🇽 Mexico', '🇭🇺 Hungary', '🇨🇿 Czechia', '🇷🇴 Romania',
-  '🇧🇬 Bulgaria', '🇩🇰 Denmark', '🇸🇪 Sweden', '🇫🇮 Finland', '🇯🇴 Jordan',
+/**
+ * Builds a flag emoji from an ISO 3166-1 alpha-2 country code (e.g. 'IT').
+ * Each letter maps to a Unicode regional indicator symbol; a pair of them renders as a flag.
+ * Keeping only ASCII codes in the source avoids the emoji getting mangled by editors/encodings.
+ */
+const flag = (code: string) =>
+  String.fromCodePoint(...[...code.toUpperCase()].map((ch) => 0x1f1e6 + ch.charCodeAt(0) - 65));
+
+type Country = [code: string, name: string];
+
+// Countries visited, grouped by continent. Cyprus is listed under Europe and Turkey under Asia.
+const VISITED: { continent: string; countries: Country[] }[] = [
+  {
+    continent: 'Europe',
+    countries: [
+      ['IT', 'Italy'], ['GB', 'United Kingdom'], ['ES', 'Spain'], ['FR', 'France'], ['DE', 'Germany'],
+      ['NL', 'Netherlands'], ['BE', 'Belgium'], ['CH', 'Switzerland'], ['MC', 'Monaco'], ['MT', 'Malta'],
+      ['GR', 'Greece'], ['CY', 'Cyprus'], ['BG', 'Bulgaria'], ['RS', 'Serbia'], ['BA', 'Bosnia and Herzegovina'],
+      ['HU', 'Hungary'], ['SK', 'Slovakia'], ['SE', 'Sweden'], ['NO', 'Norway'], ['FI', 'Finland'],
+    ],
+  },
+  {
+    continent: 'Asia',
+    countries: [
+      ['TH', 'Thailand'], ['MY', 'Malaysia'], ['SG', 'Singapore'], ['ID', 'Indonesia'], ['TR', 'Turkey'],
+      ['IL', 'Israel'], ['QA', 'Qatar'], ['BH', 'Bahrain'], ['OM', 'Oman'],
+    ],
+  },
+  {
+    continent: 'Africa',
+    countries: [['MA', 'Morocco'], ['EG', 'Egypt']],
+  },
+  {
+    continent: 'North America & the Caribbean',
+    countries: [['US', 'USA'], ['DO', 'Dominican Republic'], ['BS', 'Bahamas']],
+  },
 ];
 
 const STATS = [
@@ -69,18 +97,27 @@ export default function About() {
       <section className="container-page py-16">
         <h2 className="text-3xl font-bold">Where I've been</h2>
         <p className="mt-2 text-plum/70">An interactive map is coming - for now, here is my passport in emoji form.</p>
-        <div className="mt-6 flex flex-wrap gap-2">
-          {VISITED.map((c, i) => (
-            <motion.span
-              key={c}
-              className="chip border border-plum/10 bg-white"
-              initial={{ opacity: 0, scale: 0.8 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.02 }}
-            >
-              {c}
-            </motion.span>
+        <div className="mt-8 space-y-8">
+          {VISITED.map((group) => (
+            <div key={group.continent}>
+              <h3 className="text-xl font-bold">
+                {group.continent} <span className="font-sans text-base font-normal text-plum/60">({group.countries.length})</span>
+              </h3>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {group.countries.map(([code, name], i) => (
+                  <motion.span
+                    key={code}
+                    className="chip border border-plum/10 bg-white"
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.02 }}
+                  >
+                    <span aria-hidden="true">{flag(code)}</span> {name}
+                  </motion.span>
+                ))}
+              </div>
+            </div>
           ))}
         </div>
       </section>

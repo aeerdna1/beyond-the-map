@@ -10,11 +10,11 @@ export const DESTINATIONS: Destination[] = [japan, iceland, morocco, ...others];
 /** Shown on the homepage "featured" grid. */
 export const FEATURED = ['japan', 'iceland', 'morocco', 'bali', 'norway', 'hawaii'];
 
-/** Contact details - TODO: replace placeholders with the real ones. */
+/** Contact details shown in the footer, the Plan my trip page and the privacy policy. */
 export const CONTACT = {
-  phone: '+40 7XX XXX XXX',
-  whatsapp: 'https://wa.me/40XXXXXXXXX',
-  email: 'hello@example.com',
-  instagram: 'https://instagram.com/your.handle',
-  instagramHandle: '@your.handle',
+  phone: '+40 726 206 555',
+  whatsapp: 'https://wa.me/40726206555',
+  email: 'andreea.barbulescu@yahoo.com',
+  instagram: 'https://instagram.com/aeerdna_1',
+  instagramHandle: '@aeerdna_1',
 };
