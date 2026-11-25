@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { api } from '../api/client';
 import { CONTACT, DESTINATIONS } from '../data';
-import { useT, type Dict } from '../i18n';
+import { useLang, useT, type Dict } from '../i18n';
 
 // Validation messages come from the active dictionary, so the schema is built per language.
 const makeSchema = (e: Dict['form']['errors']) =>
@@ -39,6 +39,7 @@ const STYLE_VALUES = ['relax', 'adventure', 'culture', 'mix'] as const;
 
 export default function ContactForm({ preselect }: { preselect?: string }) {
   const t = useT();
+  const { lang } = useLang();
   const f = t.form;
   const schema = useMemo(() => makeSchema(f.errors), [f.errors]);
   const [sent, setSent] = useState(false);
@@ -80,6 +81,8 @@ export default function ContactForm({ preselect }: { preselect?: string }) {
         travelFrom: data.travelFrom || undefined,
         travelTo: data.travelTo || undefined,
         message: data.message || undefined,
+        // The confirmation email is sent in the language the visitor is using.
+        lang,
       });
       setSent(true);
     } catch {

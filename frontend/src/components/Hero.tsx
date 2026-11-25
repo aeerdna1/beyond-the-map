@@ -3,7 +3,7 @@ import { motion, useReducedMotion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import Typewriter from './Typewriter';
 import { img } from '../data/img';
-import { useT } from '../i18n';
+import { useLang, useT } from '../i18n';
 
 // Dashed flight path (viewBox 0 0 1000 300); the plane follows the same curve via offsetPath.
 const PATH = 'M 20 260 C 250 40, 450 320, 650 140 S 900 40, 980 60';
@@ -15,6 +15,7 @@ const PATH = 'M 20 260 C 250 40, 450 320, 650 140 S 900 40, 980 60';
  */
 export default function Hero() {
   const t = useT();
+  const { lang } = useLang();
   const [flying, setFlying] = useState(false);
   const reduce = useReducedMotion();
 
@@ -64,7 +65,8 @@ export default function Hero() {
           </h1>
           <p className="mt-6 text-xl text-plum/80 sm:text-2xl">
             {t.hero.question} <br className="sm:hidden" />
-            <Typewriter words={t.hero.words} />
+            {/* key={lang} restarts the animation, so no half-typed word from the old language is left over. */}
+            <Typewriter key={lang} words={t.hero.words} />
           </p>
           <p className="mt-3 text-lg text-plum/70">{t.hero.together}</p>
           <div className="mt-9 flex flex-wrap gap-4">

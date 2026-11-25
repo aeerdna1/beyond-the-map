@@ -56,6 +56,8 @@ export interface TripInquiry {
   travelStyle: string;
   message?: string;
   consent: boolean;
+  /** Language the visitor used the site in; picks the confirmation email language. */
+  lang?: 'en' | 'ro';
   /** Honeypot: must stay empty. */
   website?: string;
 }
