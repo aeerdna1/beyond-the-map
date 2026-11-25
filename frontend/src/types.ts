@@ -44,6 +44,34 @@ export interface Destination {
 /** Lightweight card shape returned by GET /api/destinations. */
 export type DestinationSummary = Omit<Destination, 'places'> & { placeCount: number };
 
+// ---- content translations (src/data/<lang>/) ----
+// A translation only lists the texts that differ from English. Every field is optional:
+// a missing (or empty) field shows the English text, both on the site and in the API.
+
+export interface ActivityTranslation {
+  title?: string;
+  description?: string;
+}
+
+export interface PlaceTranslation {
+  name?: string;
+  description?: string;
+  funFact?: string;
+  /** Keyed by the activity rank (1-5) in the English data. */
+  activities?: Partial<Record<number, ActivityTranslation>>;
+  /** Captions in the same order as the English gallery; null keeps the English caption. */
+  gallery?: (string | null)[];
+}
+
+export interface DestinationTranslation {
+  name?: string;
+  tagline?: string;
+  description?: string;
+  bestTimeToVisit?: string;
+  /** Keyed by the place slug in the English data. */
+  places?: Record<string, PlaceTranslation>;
+}
+
 export interface TripInquiry {
   name: string;
   email: string;

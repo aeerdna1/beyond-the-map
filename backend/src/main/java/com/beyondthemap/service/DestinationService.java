@@ -5,8 +5,13 @@ import com.beyondthemap.model.Activity;
 import com.beyondthemap.model.Destination;
 import com.beyondthemap.model.Image;
 import com.beyondthemap.model.Place;
+import com.beyondthemap.model.TripInquiry.Lang;
 import com.beyondthemap.repository.DestinationRepository;
 import com.beyondthemap.repository.PlaceRepository;
+import com.beyondthemap.service.ContentTranslations.ActivityText;
+import com.beyondthemap.service.ContentTranslations.DestinationText;
+import com.beyondthemap.service.ContentTranslations.PlaceText;
+import com.beyondthemap.service.ContentTranslations.Texts;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,27 +23,36 @@ public class DestinationService {
 
     private final DestinationRepository destinations;
     private final PlaceRepository places;
+    private final ContentTranslations translations;
 
-    public DestinationService(DestinationRepository destinations, PlaceRepository places) {
+    public DestinationService(DestinationRepository destinations, PlaceRepository places,
+                              ContentTranslations translations) {
         this.destinations = destinations;
         this.places = places;
+        this.translations = translations;
+    }
+
+    // Public reads take a language. English is the base text; for other languages each field
+    // is replaced by its translation when one exists, and otherwise stays English.
+
+    @Transactional(readOnly = true)
+    public List<DestinationSummaryDto> list(Lang lang) {
+        Texts tx = translations.forAllDestinations(lang);
+        return destinations.findAllByOrderBySortOrderAsc().stream().map(d -> toSummary(d, tx)).toList();
     }
 
     @Transactional(readOnly = true)
-    public List<DestinationSummaryDto> list() {
-        return destinations.findAllByOrderBySortOrderAsc().stream().map(DestinationService::toSummary).toList();
-    }
-
-    @Transactional(readOnly = true)
-    public DestinationDto get(String slug) {
-        return destinations.findBySlug(slug).map(DestinationService::toDto)
+    public DestinationDto get(String slug, Lang lang) {
+        Destination d = destinations.findBySlug(slug)
                 .orElseThrow(() -> new NotFoundException("Destination not found: " + slug));
+        return toDto(d, translations.forDestination(d.getId(), lang));
     }
 
     @Transactional(readOnly = true)
-    public PlaceDto getPlace(String slug, String placeSlug) {
-        return places.findByDestinationSlugAndSlug(slug, placeSlug).map(DestinationService::toDto)
+    public PlaceDto getPlace(String slug, String placeSlug, Lang lang) {
+        Place p = places.findByDestinationSlugAndSlug(slug, placeSlug)
                 .orElseThrow(() -> new NotFoundException("Place not found: " + slug + "/" + placeSlug));
+        return toDto(p, translations.forDestination(p.getDestination().getId(), lang));
     }
 
     /** Admin: create or fully replace a destination (including its places, top 5 and gallery). */
@@ -66,7 +80,8 @@ public class DestinationService {
         for (int i = 0; i < ps.size(); i++) {
             d.getPlaces().add(fromDto(ps.get(i), d, i));
         }
-        return toDto(destinations.save(d));
+        // The admin API edits the English base content, so it answers in English.
+        return toDto(destinations.save(d), Texts.NONE);
     }
 
     @Transactional
@@ -83,24 +98,49 @@ public class DestinationService {
         return Arrays.stream(d.getVibes().split(",")).map(String::trim).filter(s -> !s.isEmpty()).toList();
     }
 
-    static DestinationSummaryDto toSummary(Destination d) {
-        return new DestinationSummaryDto(d.getSlug(), d.getName(), d.getFlag(), d.getRegion(), vibes(d),
-                d.getTagline(), d.getDescription(), d.getBestTimeToVisit(), d.getHeroImageUrl(),
-                d.getLat(), d.getLng(), d.getPlaces().size());
+    /** The translated value when there is one, otherwise the English value. */
+    private static String or(String translated, String english) {
+        return translated == null || translated.isBlank() ? english : translated;
     }
 
-    static DestinationDto toDto(Destination d) {
-        return new DestinationDto(d.getSlug(), d.getName(), d.getFlag(), d.getRegion(), vibes(d),
-                d.getTagline(), d.getDescription(), d.getBestTimeToVisit(), d.getHeroImageUrl(),
-                d.getLat(), d.getLng(), d.getPlaces().stream().map(DestinationService::toDto).toList());
+    static DestinationSummaryDto toSummary(Destination d, Texts tx) {
+        DestinationText t = tx.destinations().get(d.getId());
+        return new DestinationSummaryDto(d.getSlug(),
+                or(t == null ? null : t.name(), d.getName()), d.getFlag(), d.getRegion(), vibes(d),
+                or(t == null ? null : t.tagline(), d.getTagline()),
+                or(t == null ? null : t.description(), d.getDescription()),
+                or(t == null ? null : t.bestTimeToVisit(), d.getBestTimeToVisit()),
+                d.getHeroImageUrl(), d.getLat(), d.getLng(), d.getPlaces().size());
     }
 
-    static PlaceDto toDto(Place p) {
-        return new PlaceDto(p.getSlug(), p.getName(), nullToEmpty(p.getDescription()), p.getFunFact(), p.getHeroImageUrl(),
-                p.getActivities().stream()
-                        .map(a -> new ActivityDto(a.getRank(), a.getTitle(), a.getDescription(), a.getImageUrl()))
-                        .toList(),
-                p.getGallery().stream().map(g -> new ImageDto(g.getUrl(), g.getCaption())).toList());
+    static DestinationDto toDto(Destination d, Texts tx) {
+        DestinationText t = tx.destinations().get(d.getId());
+        return new DestinationDto(d.getSlug(),
+                or(t == null ? null : t.name(), d.getName()), d.getFlag(), d.getRegion(), vibes(d),
+                or(t == null ? null : t.tagline(), d.getTagline()),
+                or(t == null ? null : t.description(), d.getDescription()),
+                or(t == null ? null : t.bestTimeToVisit(), d.getBestTimeToVisit()),
+                d.getHeroImageUrl(), d.getLat(), d.getLng(),
+                d.getPlaces().stream().map(p -> toDto(p, tx)).toList());
+    }
+
+    static PlaceDto toDto(Place p, Texts tx) {
+        PlaceText t = tx.places().get(p.getId());
+        return new PlaceDto(p.getSlug(),
+                or(t == null ? null : t.name(), p.getName()),
+                nullToEmpty(or(t == null ? null : t.description(), p.getDescription())),
+                or(t == null ? null : t.funFact(), p.getFunFact()),
+                p.getHeroImageUrl(),
+                p.getActivities().stream().map(a -> {
+                    ActivityText at = tx.activities().get(a.getId());
+                    return new ActivityDto(a.getRank(),
+                            or(at == null ? null : at.title(), a.getTitle()),
+                            or(at == null ? null : at.description(), a.getDescription()),
+                            a.getImageUrl());
+                }).toList(),
+                p.getGallery().stream()
+                        .map(g -> new ImageDto(g.getUrl(), or(tx.captions().get(g.getId()), g.getCaption())))
+                        .toList());
     }
 
     private static Place fromDto(PlaceDto in, Destination d, int order) {

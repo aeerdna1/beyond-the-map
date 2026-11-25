@@ -55,14 +55,17 @@ frontend/
     components/   Navbar, Footer, Hero (typewriter + plane), DestinationCard, Top5List, Gallery, ContactForm ...
     pages/        Home, Destinations, Country, Place, About, PlanTrip, Privacy, NotFound
     data/         Seed content: one file per destination (japan.ts, italy.ts, ...), others.ts (display order), img.ts (photo IDs)
+      ro/         Romanian destination content (only what differs from English), translations.ts merges it
+    i18n/         Interface text: en.ts, ro.ts, language switch
     api/          API client with local-data fallback
-  scripts/generate-seed-sql.mjs   -> writes backend V2__seed_destinations.sql from src/data
+  scripts/generate-seed-sql.mjs   -> writes backend V2__seed_destinations.sql and R__seed_translations.sql from src/data
 backend/
   src/main/java/com/beyondthemap/
     controller/   DestinationController, InquiryController, AdminController, ApiExceptionHandler
-    service/      DestinationService, InquiryService, MailService, RateLimiter
+    service/      DestinationService, ContentTranslations, InquiryService, MailService, RateLimiter
     model/ repository/ dto/ config/ (SecurityConfig: CORS + admin auth)
-  src/main/resources/db/migration/  V1__schema.sql, V2__seed_destinations.sql (generated)
+  src/main/resources/db/migration/  V1__schema.sql, V2__seed_destinations.sql (generated), V3 inquiry language,
+                                    V4 translation tables, R__seed_translations.sql (generated)
 ```
 
 ## Editing content
@@ -75,18 +78,41 @@ The frontend `src/data/*.ts` files are the single source of truth for the seed c
    database, put further content changes in a new migration (`V3__...sql`) or use the admin API. Flyway
    rejects changes to migrations that have already been applied.
 
+### Translating destination content
+
+English is the base content. Translations only hold the texts that differ, and anything missing
+(a destination, a place, a field or a caption) is shown in English, both by the API and by the offline fallback.
+Only Japan is translated into Romanian so far (`frontend/src/data/ro/japan.ts`); use it as the template.
+
+1. Copy `frontend/src/data/ro/japan.ts` to `ro/<slug>.ts` and translate it. Places are keyed by slug,
+   top-5 activities by rank, and gallery captions follow the English order (`null` keeps the English caption).
+   Leave out names that do not change (for example Tokyo).
+2. Register it in `frontend/src/data/ro/index.ts`.
+3. Run `npm run seed:sql`. It regenerates `R__seed_translations.sql`. If a slug, rank or caption does not
+   exist in the English data, or a text is too long for its column, it prints the problem and writes nothing.
+
+`R__seed_translations.sql` is a *repeatable* Flyway migration: it re-runs automatically whenever it changes,
+so translations can be updated at any time, also after going live. It replaces all translation rows and
+matches them to the English rows by slug, rank and gallery position, so changing a place slug or the
+gallery order in English also needs the translation updated.
+The admin API only edits English. Replacing a destination through it removes that destination's
+translations until the next deploy re-runs the translation migration.
+
 ## REST API
 
 | Method | Endpoint | Auth | Purpose |
 |---|---|---|---|
-| GET | `/api/destinations` | public | All destination cards |
-| GET | `/api/destinations/{slug}` | public | Destination + its places |
-| GET | `/api/destinations/{slug}/places/{placeSlug}` | public | Place: fun fact, top 5, gallery |
+| GET | `/api/destinations?lang=ro` | public | All destination cards |
+| GET | `/api/destinations/{slug}?lang=ro` | public | Destination + its places |
+| GET | `/api/destinations/{slug}/places/{placeSlug}?lang=ro` | public | Place: fun fact, top 5, gallery |
 | POST | `/api/inquiries` | public | Plan-my-trip request (validated, honeypot, 5/hour/IP rate limit, emails) |
 | GET | `/api/admin/inquiries?status=NEW` | admin | Paged requests, newest first |
 | PUT | `/api/admin/inquiries/{id}/status` | admin | `{"status":"CONTACTED"}`: NEW / CONTACTED / BOOKED / CLOSED |
 | DELETE | `/api/admin/inquiries/{id}` | admin | GDPR erasure |
-| PUT / DELETE | `/api/admin/destinations/{slug}` | admin | Create/replace or delete content |
+| PUT / DELETE | `/api/admin/destinations/{slug}` | admin | Create/replace or delete content (English) |
+
+`lang` is optional on the public reads: `ro` returns Romanian where a translation exists, and anything else
+(missing, `en` or unknown) returns English. The response has a `Content-Language` header.
 
 Admin uses HTTP Basic (`ADMIN_USER` / `ADMIN_PASSWORD`). The default `admin` / `change-me` only works with the
 local `dev` profile. **In any other environment the API refuses to start** unless `ADMIN_PASSWORD` is set to at
@@ -148,6 +174,8 @@ interactive hero (typewriter + "Start the journey" plane), filters by region and
 - [ ] Have the privacy policy reviewed by someone qualified -> `frontend/src/pages/Privacy.tsx`
       (bump `LAST_UPDATED` whenever you change it)
 - [ ] Domain name, hosting choice, SMTP provider
+- [ ] Romanian destination content for the other 12 destinations (Japan is done, the rest shows English)
+      -> `frontend/src/data/ro/` (see "Translating destination content")
 
 **Not built yet (from the roadmap):** 3D globe (desktop only), admin UI (the admin API exists),
-RO/EN language switch, testimonials, blog, newsletter, Cloudinary image pipeline, SEO sitemap, analytics.
+testimonials, blog, newsletter, Cloudinary image pipeline, SEO sitemap, analytics.

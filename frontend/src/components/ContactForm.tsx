@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { api } from '../api/client';
 import { CONTACT, DESTINATIONS } from '../data';
+import { translationFor } from '../data/translations';
 import { useLang, useT, type Dict } from '../i18n';
 
 // Validation messages come from the active dictionary, so the schema is built per language.
@@ -130,7 +131,10 @@ export default function ContactForm({ preselect }: { preselect?: string }) {
       <fieldset>
         <legend className="label">{f.where}</legend>
         <div className="flex flex-wrap gap-2">
-          {[...DESTINATIONS.map((d) => ({ v: d.slug, label: `${d.flag} ${d.name}` })), { v: 'not-sure', label: f.notSure }].map((o) => {
+          {[
+            ...DESTINATIONS.map((d) => ({ v: d.slug, label: `${d.flag} ${translationFor(lang, d.slug)?.name || d.name}` })),
+            { v: 'not-sure', label: f.notSure },
+          ].map((o) => {
             const on = chosen.includes(o.v);
             return (
               <label key={o.v} className={`chip cursor-pointer border ${on ? 'border-sunset bg-sunset text-white' : 'border-plum/15 bg-white text-plum hover:border-coral'}`}>
