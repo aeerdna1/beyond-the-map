@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -45,7 +45,7 @@ export default function ContactForm({ preselect }: { preselect?: string }) {
   const [error, setError] = useState<string | null>(null);
 
   const {
-    register, handleSubmit, watch, formState: { errors, isSubmitting },
+    register, handleSubmit, watch, trigger, formState: { errors, isSubmitting },
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -56,6 +56,15 @@ export default function ContactForm({ preselect }: { preselect?: string }) {
       consent: false,
     },
   });
+
+  // Error messages already on screen are stored strings, so after a language switch
+  // re-validate just the fields that currently show one; they come back in the new language.
+  // On first render there are no errors, so this does nothing.
+  useEffect(() => {
+    const shown = Object.keys(errors) as (keyof FormValues)[];
+    if (shown.length) void trigger(shown);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [schema]);
 
   const chosen = watch('destinations') ?? [];
   const style = watch('travelStyle');

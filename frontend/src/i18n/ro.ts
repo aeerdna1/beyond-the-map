@@ -1,0 +1,214 @@
+import type { Dict } from './en';
+
+// Romanian interface text. Typed as Dict, so a missing or misspelled key, a wrong function
+// signature or a list with the wrong number of items fails the build.
+// Keep the keys and the order of list items identical to en.ts.
+
+// Romanian plural for counted nouns: 1 loc, 2-19 locuri, 20+ "de locuri" (also 100, 120, ...).
+const deFor = (n: number) => (n !== 0 && (n % 100 === 0 || n % 100 >= 20) ? 'de ' : '');
+
+const ro: Dict = {
+  meta: {
+    siteName: 'Beyond the Map',
+    defaultTitle: 'Beyond the Map - Construiește o viață care te reprezintă',
+    description:
+      'Construiește o viață care te reprezintă. Destinații alese cu grijă și călătorii personalizate de la cineva care a vizitat peste 35 de țări.',
+    notFound: 'Pagină negăsită',
+  },
+  nav: {
+    home: 'Acasă',
+    destinations: 'Destinații',
+    about: 'Despre mine',
+    planTrip: 'Planifică-mi călătoria',
+    openMenu: 'Deschide meniul',
+    closeMenu: 'Închide meniul',
+    language: 'Limbă',
+  },
+  footer: {
+    tagline: 'Construiește o viață care te reprezintă. Călătorii personalizate, inspirate din experiența reală în peste 35 de țări.',
+    explore: 'Explorează',
+    privacy: 'Politica de confidențialitate',
+    sayHello: 'Scrie-mi',
+    photos: 'Fotografii provizorii de pe Unsplash',
+  },
+  common: { close: 'Închide', back: 'Înapoi' },
+  regions: {
+    Asia: 'Asia',
+    Europe: 'Europa',
+    Africa: 'Africa',
+    'South America': 'America de Sud',
+    Islands: 'Insule',
+  },
+  vibes: { Beach: 'Plajă', Nature: 'Natură', Culture: 'Cultură' },
+  hero: {
+    badge: '🌍 35+ țări · experiențe reale',
+    titleStart: 'Construiește o viață care ',
+    titleEm: 'te reprezintă.',
+    question: 'Vrei să vezi…',
+    words: ['Tokyo?', 'Sahara?', 'aurora boreală?', 'orezăriile din Bali?', 'fiordurile?', 'piramidele?'],
+    together: 'Hai să pornim împreună în această călătorie.',
+    start: 'Începe călătoria',
+    plan: 'Planifică-mi călătoria',
+    captions: { kyoto: 'Kyoto', iceland: 'Islanda', chefchaouen: 'Chefchaouen' },
+  },
+  status: {
+    loading: 'Se încarcă',
+    lostTitle: 'Se pare că ne-am rătăcit',
+    notFound: {
+      page: 'Nu am găsit această pagină.',
+      destination: 'Nu am găsit această destinație.',
+      place: 'Nu am găsit acest loc.',
+    },
+    seeAll: 'Vezi toate destinațiile',
+  },
+  card: {
+    places: (n: number) => `${n} ${deFor(n)}${n === 1 ? 'loc' : 'locuri'} de descoperit`,
+    explore: 'Explorează →',
+  },
+  home: {
+    aboutKicker: 'Salut, sunt prietena ta de călătorie',
+    aboutTitle: '35+ țări, o singură poveste',
+    aboutText:
+      'După ce am călătorit în peste 35 de țări, am adunat locurile, momentele și comorile ascunse care mi-au schimbat felul în care văd lumea. Aceasta este experiența mea și vreau să o împărtășesc cu tine, ca următoarea ta călătorie să pară făcută special pentru tine.',
+    readStory: 'Citește povestea mea',
+    roadAlt: 'Pe drum',
+    featuredKicker: 'Unde mergem acum?',
+    featuredTitle: 'Destinații recomandate',
+    seeAll: 'Vezi toate destinațiile →',
+    howKicker: 'Cum funcționează',
+    howTitle: 'Călătoria ta în 3 pași simpli',
+    step: (n: number) => `Pasul ${n}`,
+    steps: [
+      { title: 'Spune-mi visul tău', text: 'Completează un formular scurt: unde, când, cu cine și ce fel de călătorie te face fericit(ă).' },
+      { title: 'Îți creez itinerariul', text: 'Un plan zi cu zi, construit din locuri pe care le-am vizitat și le-am iubit cu adevărat.' },
+      { title: 'Tu îl trăiești', text: 'Fă-ți bagajele. Rămân la un mesaj distanță pentru sfaturi cât timp ești la drum.' },
+    ],
+    ctaTitle: 'Sunt gata când ești și tu.',
+    ctaText: 'Spune-mi unde vrea să meargă inima ta - o transform într-o călătorie care te reprezintă.',
+    ctaButton: 'Planifică-mi călătoria ✈',
+  },
+  destinations: {
+    kicker: 'Explorează',
+    title: 'Destinații',
+    intro: 'Țări, insule și regiuni pe care le-am explorat - fiecare cu locurile în care mi-aș trimite cea mai bună prietenă.',
+    all: 'Toate',
+    noMatch: 'Nicio destinație nu se potrivește încă acestor filtre - încearcă o altă combinație.',
+  },
+  country: {
+    back: '← Toate destinațiile',
+    bestTime: '☀️ Cea mai bună perioadă de vizitat',
+    placesIn: (name: string) => `Locuri pe care le iubesc în ${name}`,
+    comingSoon: 'În curând',
+    top5: 'Top 5 lucruri de făcut →',
+    planTo: (name: string) => `Planifică o călătorie în ${name} ✈`,
+  },
+  place: {
+    didYouKnow: '💡 Știai că?',
+    top5: 'Top 5 lucruri de făcut',
+    comingSoonTitle: (name: string) => `Topul meu 5 pentru ${name} vine în curând`,
+    comingSoonText: 'Încă lucrez la acesta - dar mi-ar plăcea să-l planificăm împreună chiar acum.',
+    gallery: 'Galerie',
+    dreaming: (name: string) => `Visezi la ${name}?`,
+    dreamingText: 'Îți construiesc o călătorie în jurul lui - cu toate comorile ascunse.',
+    planHere: 'Planifică o călătorie aici ✈',
+    moreIn: (name: string) => `Mai multe în ${name}`,
+  },
+  about: {
+    kicker: 'Despre mine',
+    titleStart: '35+ țări mai târziu, ',
+    titleEm: 'aceasta este povestea mea',
+    story:
+      'Totul a început cu un rucsac și un zbor ieftin. S-a transformat într-o viață de drumeții la răsărit, piețe de noapte, plimbări pe ghețari și conversații cu străini care au devenit prieteni. Acum vreau să te ajut să construiești o călătorie care te reprezintă.',
+    cta: 'Hai să o planificăm pe a ta',
+    stats: {
+      countries: 'țări',
+      destinations: 'destinații pe acest site',
+      places: 'locuri cu topul meu 5',
+      sunsets: 'apusuri privite',
+    },
+    beenTitle: 'Unde am fost',
+    beenIntro: 'Urmează o hartă interactivă - până atunci, iată pașaportul meu în emoji.',
+    continents: {
+      europe: 'Europa',
+      asia: 'Asia',
+      africa: 'Africa',
+      northAmerica: 'America de Nord și Caraibe',
+      southAmerica: 'America de Sud',
+    },
+  },
+  planTrip: {
+    kicker: 'Planifică-mi călătoria',
+    title: 'Hai să-ți construim călătoria',
+    intro:
+      'Spune-mi câteva lucruri despre călătoria la care visezi. Îți răspund în 24 de ore cu idei și pașii următori - fără niciun angajament.',
+    talkDirect: 'Preferi să vorbim direct?',
+    chat: 'Scrie-mi',
+    phone: 'Telefon',
+    email: 'Email',
+  },
+  form: {
+    name: 'Numele tău *',
+    namePlaceholder: 'Ana Popescu',
+    email: 'Email *',
+    emailPlaceholder: 'ana@email.com',
+    phone: 'Telefon / WhatsApp',
+    travelers: 'Călători *',
+    where: 'Unde ai vrea să mergi? *',
+    notSure: '🤔 Încă nu știu',
+    from: 'De la',
+    to: 'Până la',
+    budget: 'Buget *',
+    chooseRange: 'Alege un interval',
+    // Same order as BUDGET_VALUES in ContactForm.tsx; only the label is translated.
+    budgets: ['< 1.500 EUR / persoană', '1.500 - 3.000 EUR / persoană', '3.000 - 5.000 EUR / persoană', '5.000+ EUR / persoană'],
+    style: 'Stil de călătorie *',
+    styles: { relax: '🏝️ Relaxare', adventure: '🧗 Aventură', culture: '🏯 Cultură', mix: '✨ Câte puțin din toate' },
+    message: 'Povestește-mi despre călătoria visurilor tale',
+    messagePlaceholder: 'Luna de miere? Prima călătorie mare? O aventură culinară?',
+    consentBefore: 'Sunt de acord ca datele mele să fie folosite pentru a fi contactat(ă) în legătură cu călătoria mea. Vezi ',
+    consentLink: 'Politica de confidențialitate',
+    consentAfter: '. *',
+    sending: 'Se trimite…',
+    submit: 'Trimite cererea de călătorie ✈',
+    sendError: 'Ne pare rău, formularul nu a putut fi trimis acum. Te rog să-mi scrii pe WhatsApp sau pe email.',
+    thanksTitle: 'Mulțumesc!',
+    thanksText: 'Îți răspund în 24 de ore. O confirmare este deja în drum spre căsuța ta de email.',
+    errors: {
+      name: 'Te rog să-mi spui cum te numești',
+      email: 'Adresa de email nu pare corectă',
+      destinations: 'Alege cel puțin o destinație (sau „Încă nu știu”)',
+      travelers: 'Câte persoane? (1 - 50)',
+      budget: 'Alege un interval de buget',
+      style: 'Alege un stil de călătorie',
+      consent: 'Te rog să accepți, ca să te pot contacta',
+      dates: 'Data de întoarcere trebuie să fie după data plecării',
+    },
+  },
+  privacy: {
+    title: 'Politica de confidențialitate',
+    // Update the date in BOTH en.ts and ro.ts whenever the policy text changes.
+    lastUpdated: 'Ultima actualizare: 25 noiembrie 2026',
+    whoTitle: 'Cine sunt',
+    who: (name: string) =>
+      `Acest site, Beyond the Map, este administrat de ${name}, persoană fizică cu domiciliul în România. Sunt operatorul datelor cu caracter personal pe care mi le trimiți prin acest site.`,
+    contactTitle: 'Cum mă poți contacta',
+    email: 'Email',
+    phone: 'Telefon / WhatsApp',
+    contactNote: 'Pentru orice întrebare sau cerere legată de confidențialitate, emailul este cea mai rapidă cale.',
+    collectTitle: 'Ce date colectez',
+    collect:
+      'Când trimiți formularul „Planifică-mi călătoria”, colectez numele, adresa de email, numărul de telefon (opțional), destinațiile care te interesează, datele călătoriei, numărul de călători, intervalul de buget, stilul de călătorie și mesajul tău.',
+    whyTitle: 'De ce',
+    why: 'Doar pentru a răspunde cererii tale și a-ți planifica călătoria (temei legal: consimțământul tău, art. 6 alin. (1) lit. a) din GDPR). Nu îți vând niciodată datele și nu le folosesc pentru marketing fără legătură cu cererea ta. Completarea formularului este voluntară, dar fără datele tale de contact nu îți pot răspunde.',
+    howLongTitle: 'Cât timp',
+    howLong: 'Cererile de călătorie sunt păstrate cel mult 24 de luni de la ultimul nostru contact, apoi sunt șterse.',
+    rightsTitle: 'Drepturile tale',
+    rights:
+      'Poți cere oricând să îți vezi, să corectezi sau să ștergi datele ori să îți retragi consimțământul, scriindu-mi la adresa de email de mai sus. Retragerea consimțământului nu afectează prelucrarea făcută înainte de retragere. Poți depune și o plângere la autoritatea națională de protecție a datelor (în România: ANSPDCP, www.dataprotection.ro).',
+    processorsTitle: 'Persoane împuternicite',
+    processors:
+      'Furnizorul de găzduire, furnizorul de trimitere a emailurilor și CDN-ul de imagini - fiecare obligat printr-un acord de prelucrare a datelor.',
+  },
+};
+
+export default ro;

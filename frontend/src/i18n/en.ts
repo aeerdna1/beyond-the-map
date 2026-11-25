@@ -1,5 +1,10 @@
 import type { Region, Vibe } from '../types';
 
+// Fixed-length lists, so a translation with a missing item fails the build too.
+type Step = { title: string; text: string };
+type Steps = [Step, Step, Step];
+type Budgets = [string, string, string, string];
+
 // English interface text. This is the reference dictionary: ro.ts must provide every key
 // with the same shape, which TypeScript checks at build time (`const ro: Dict`).
 // Destination content (places, fun facts, top 5) lives in src/data and is not translated here.
@@ -78,7 +83,7 @@ const en = {
       { title: 'Tell me your dream', text: 'Fill in a short form: where, when, who, and what kind of trip makes you happy.' },
       { title: 'I craft your itinerary', text: 'A day-by-day plan built from places I have actually been to and loved.' },
       { title: 'You live it', text: 'Pack your bags. I stay one message away for tips while you travel.' },
-    ],
+    ] as Steps,
     ctaTitle: 'Ready when you are.',
     ctaText: "Tell me where your heart wants to go - I'll turn it into a trip that feels like you.",
     ctaButton: 'Plan my trip ✈',
@@ -156,7 +161,7 @@ const en = {
     budget: 'Budget *',
     chooseRange: 'Choose a range',
     // Same order as BUDGET_VALUES in ContactForm.tsx; only the label is translated.
-    budgets: ['< 1,500 EUR / person', '1,500 - 3,000 EUR / person', '3,000 - 5,000 EUR / person', '5,000+ EUR / person'],
+    budgets: ['< 1,500 EUR / person', '1,500 - 3,000 EUR / person', '3,000 - 5,000 EUR / person', '5,000+ EUR / person'] as Budgets,
     style: 'Travel style *',
     styles: { relax: '🏝️ Relax', adventure: '🧗 Adventure', culture: '🏯 Culture', mix: '✨ A bit of everything' },
     message: 'Tell me about your dream trip',

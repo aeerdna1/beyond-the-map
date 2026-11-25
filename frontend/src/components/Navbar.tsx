@@ -1,6 +1,29 @@
 import { useEffect, useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
-import { useT } from '../i18n';
+import { LANGS, LANG_NAMES, useLang, useT } from '../i18n';
+
+/** EN / RO segmented switch. The active language is marked with aria-pressed. */
+function LangSwitch({ className = '' }: { className?: string }) {
+  const t = useT();
+  const { lang, setLang } = useLang();
+  return (
+    <div role="group" aria-label={t.nav.language} className={`inline-flex rounded-full border border-plum/15 bg-white/70 p-0.5 text-sm ${className}`}>
+      {LANGS.map((l) => (
+        <button
+          key={l}
+          type="button"
+          lang={l}
+          title={LANG_NAMES[l]}
+          aria-pressed={lang === l}
+          onClick={() => setLang(l)}
+          className={`rounded-full px-3 py-1 font-semibold transition ${lang === l ? 'bg-sunset text-white' : 'text-plum hover:text-sunset'}`}
+        >
+          {l.toUpperCase()}
+        </button>
+      ))}
+    </div>
+  );
+}
 
 export default function Navbar() {
   const t = useT();
@@ -34,19 +57,21 @@ export default function Navbar() {
           <span aria-hidden>✈️</span>
         </Link>
 
-        <div className="hidden items-center gap-8 md:flex">
+        {/* Desktop links start at lg: the Romanian labels are too wide for md next to the logo. */}
+        <div className="hidden items-center gap-6 lg:flex">
           {LINKS.map((l) => (
             <NavLink key={l.to} to={l.to} end={l.to === '/'} className={linkCls}>
               {l.label}
             </NavLink>
           ))}
-          <Link to="/plan-my-trip" className="btn-primary !py-2">
+          <LangSwitch />
+          <Link to="/plan-my-trip" className="btn-primary whitespace-nowrap !py-2">
             {t.nav.planTrip}
           </Link>
         </div>
 
         <button
-          className="flex h-10 w-10 items-center justify-center rounded-full text-plum md:hidden"
+          className="flex h-10 w-10 items-center justify-center rounded-full text-plum lg:hidden"
           aria-label={open ? t.nav.closeMenu : t.nav.openMenu}
           aria-expanded={open}
           onClick={() => setOpen((o) => !o)}
@@ -58,13 +83,14 @@ export default function Navbar() {
       </nav>
 
       {open && (
-        <div className="border-t border-plum/10 md:hidden">
+        <div className="border-t border-plum/10 lg:hidden">
           <div className="container-page flex flex-col gap-4 py-5">
             {LINKS.map((l) => (
               <NavLink key={l.to} to={l.to} end={l.to === '/'} className={linkCls}>
                 {l.label}
               </NavLink>
             ))}
+            <LangSwitch className="self-start" />
             <Link to="/plan-my-trip" className="btn-primary">
               {t.nav.planTrip}
             </Link>
