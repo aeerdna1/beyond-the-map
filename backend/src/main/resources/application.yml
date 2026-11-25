@@ -36,9 +36,9 @@ app:
   cors-origins: ${CORS_ORIGINS:http://localhost:5173}
   mail:
     enabled: ${MAIL_ENABLED:false}
-    from: ${MAIL_FROM:hello@example.com}
+    from: ${MAIL_FROM:andreea.barbulescu@yahoo.com}
     # Where new trip requests are sent (the owner).
-    notify-to: ${MAIL_NOTIFY_TO:hello@example.com}
+    notify-to: ${MAIL_NOTIFY_TO:andreea.barbulescu@yahoo.com}
   admin:
     username: ${ADMIN_USER:admin}
     # Change in production! Plain value is encoded with BCrypt at startup.

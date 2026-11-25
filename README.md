@@ -54,7 +54,7 @@ frontend/
   src/
     components/   Navbar, Footer, Hero (typewriter + plane), DestinationCard, Top5List, Gallery, ContactForm ...
     pages/        Home, Destinations, Country, Place, About, PlanTrip, Privacy, NotFound
-    data/         Seed content: japan.ts, iceland.ts, morocco.ts (complete), others.ts (stubs), img.ts (photo IDs)
+    data/         Seed content: one file per destination (japan.ts, italy.ts, ...), others.ts (display order), img.ts (photo IDs)
     api/          API client with local-data fallback
   scripts/generate-seed-sql.mjs   -> writes backend V2__seed_destinations.sql from src/data
 backend/
@@ -98,11 +98,17 @@ Admin uses HTTP Basic (`ADMIN_USER` / `ADMIN_PASSWORD`, default `admin` / `chang
 | `CORS_ORIGINS` | `http://localhost:5173` | Comma-separated; set to your Vercel/Netlify URL |
 | `MAIL_ENABLED` | `false` | `true` to actually send |
 | `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD` | | Brevo / SendGrid / Gmail SMTP |
-| `MAIL_FROM`, `MAIL_NOTIFY_TO` | `hello@example.com` | Sender, and where new requests are sent |
+| `MAIL_FROM`, `MAIL_NOTIFY_TO` | `andreea.barbulescu@yahoo.com` | Sender, and where new requests are sent. `MAIL_FROM` must be an address your SMTP provider is allowed to send as (see below) |
 | `ADMIN_USER`, `ADMIN_PASSWORD` | `admin` / `change-me` | |
 | `INQUIRY_RATE_LIMIT` | `5` | Requests per IP per hour |
 
 Frontend: `VITE_API_URL` (API base URL in production), `VITE_USE_LOCAL_DATA=true` (static demo, never calls the API).
+
+> **Sender address and Yahoo.** Yahoo's DMARC policy is `reject`: mail that says it is *from* a `@yahoo.com`
+> address but is sent through another provider (Brevo, SendGrid, ...) is usually rejected or lands in spam.
+> Either send through Yahoo's own SMTP (`smtp.mail.yahoo.com`, port 587, with a Yahoo *app password*), or set
+> `MAIL_FROM` to an address on your own domain that you have verified with your SMTP provider. `MAIL_NOTIFY_TO`
+> can stay your Yahoo address. Visitor emails already set `Reply-To`, so replies always reach you.
 
 ## Deployment: keep the API behind a proxy
 
@@ -129,14 +135,15 @@ cd frontend && npm run build  # type-check + production build
 
 **Done:** all pages, responsive layout (mobile hamburger menu, 1/2/3-column grids), coral/sunset/amber design system,
 interactive hero (typewriter + "Start the journey" plane), filters by region and vibe, complete content for
-**Japan, Iceland and Morocco** (14 places with fun fact + top 5), the inquiry pipeline, GDPR consent and privacy page.
+**all 11 destinations** (49 places with fun fact + top 5), the inquiry pipeline, GDPR consent and privacy page.
 
 **Needs your input:**
-- [ ] Real **phone / WhatsApp number, email, Instagram** -> `frontend/src/data/index.ts` (`CONTACT`)
+- [x] Real **phone / WhatsApp number, email, Instagram** -> `frontend/src/data/index.ts` (`CONTACT`)
 - [ ] **Your own photos.** The current ones are Unsplash placeholders and are reused across places -> `frontend/src/data/img.ts`
-- [ ] Top 5 + fun facts for **Thailand, Bali, Malaysia, Singapore, Hawaii, Egypt, Italy, Norway** (place pages show "coming soon")
-- [ ] Your personal story and the real list of visited countries -> `frontend/src/pages/About.tsx`
-- [ ] Have the privacy policy reviewed -> `frontend/src/pages/Privacy.tsx`
+- [x] Top 5 + fun facts for every destination (please proofread and add your own experiences)
+- [ ] Your personal story -> `frontend/src/pages/About.tsx` (the visited-countries list is done)
+- [ ] Have the privacy policy reviewed by someone qualified -> `frontend/src/pages/Privacy.tsx`
+      (bump `LAST_UPDATED` whenever you change it)
 - [ ] Domain name, hosting choice, SMTP provider
 
 **Not built yet (from the roadmap):** 3D globe (desktop only), admin UI (the admin API exists),

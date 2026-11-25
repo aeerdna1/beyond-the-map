@@ -12,6 +12,9 @@ export const FEATURED = ['japan', 'iceland', 'morocco', 'bali', 'norway', 'hawai
 
 /** Contact details shown in the footer, the Plan my trip page and the privacy policy. */
 export const CONTACT = {
+  /** Data controller named in the privacy policy (GDPR Art. 13). */
+  ownerName: 'Andreea Barbulescu',
+  country: 'Romania',
   phone: '+40 726 206 555',
   whatsapp: 'https://wa.me/40726206555',
   email: 'andreea.barbulescu@yahoo.com',
